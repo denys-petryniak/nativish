@@ -66,6 +66,7 @@ Use when there's nothing to coach. Show only `✓ en-coach` to confirm the rule 
 
 - **Short acknowledgments** — `yes`, `no`, `ok`, `sure`, `thanks`, `thx`, `nope`, `cool`, `great`, `nice`, `done`, `got it`, `sounds good`. A compliment on a one-word reply feels weird.
 - **Slash commands** — message starts with `/` (e.g. `/commit`, `/test`, `/pr-create some title`). The command text comes from the skill, not the user's writing. Skip even if arguments follow.
+- **Non-Latin script** — the message is predominantly written in a non-Latin script (Cyrillic, CJK, Arabic, Hebrew, Greek, Devanagari, Thai, etc.). It's not English — there's nothing to coach. For mixed messages (mostly English with a few non-Latin words), don't skip — coach the English part normally and leave the non-Latin words alone (see "What NOT to flag").
 
 ## What NOT to flag
 
@@ -75,6 +76,7 @@ These are chat style, not mistakes:
 - **Missing terminal period**
 - **Missing apostrophe in contractions** — `dont`, `cant`, `lets`
 - **Common abbreviations** — `smth`, `wdyt`, `pls`, `tbh`, `imo`
+- **Embedded non-Latin words** — in an otherwise-English prompt, treat Cyrillic/CJK/Arabic/etc. words as proper nouns. Example: `fix bug в auth.ts` — coach the English, leave `в` alone. Same for filenames, identifiers, or terms in another language.
 
 **Do flag:** proper nouns and acronyms — `i` → `I`, `github` → `GitHub`, `eng` → `English`.
 
