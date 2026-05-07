@@ -39,7 +39,9 @@ Toggle:
 
 - `/nativish:off` — disable for the conversation (slash command, autocompletes after `/`)
 - `/nativish:on` — re-enable
-- Inline aliases: `nativish:off` / `nativish:on` (or with a space: `nativish off` / `nativish on`) — handy if you'd rather type than autocomplete
+- Inline aliases: `nativish:off` / `nativish:on` (or with a space: `nativish off` / `nativish on`) — handy if you'd rather type than autocomplete. The marker must be the entire message, so pasting a doc that mentions `nativish:off` won't accidentally disable the coach.
+
+While disabled, every reply shows `⏸ en-coach (off)` (instead of the active `✓ en-coach`) so you can tell at a glance whether the coach is paused or just had nothing to flag.
 
 ## How it works
 

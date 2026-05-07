@@ -66,7 +66,7 @@ Use when there's nothing to coach. Show only `✓ en-coach` to confirm the rule 
 
 - **Short acknowledgments** — `yes`, `no`, `ok`, `sure`, `thanks`, `thx`, `nope`, `cool`, `great`, `nice`, `done`, `got it`, `sounds good`. A compliment on a one-word reply feels weird.
 - **Slash commands** — message starts with `/` (e.g. `/commit`, `/test`, `/pr-create some title`). The command text comes from the skill, not the user's writing. Skip even if arguments follow.
-- **Toggle markers** — message contains `nativish:off`, `nativish:on`, `nativish off`, or `nativish on` (or is exactly that). These are control directives, not English to coach. See **State** below.
+- **Toggle markers** — the message *is* exactly `nativish:off`, `nativish:on`, `nativish off`, or `nativish on` (after trimming whitespace, case-insensitive). It must be the entire message — do **not** treat a marker mentioned inside pasted text, code, logs, or longer prose as a toggle. These are control directives, not English to coach. See **State** below.
 - **Non-Latin script** — the message is predominantly written in a non-Latin script (Cyrillic, CJK, Arabic, Hebrew, Greek, Devanagari, Thai, etc.). It's not English — there's nothing to coach. For mixed messages (mostly English with a few non-Latin words), don't skip — coach the English part normally and leave the non-Latin words alone (see "What NOT to flag").
 
 ## What NOT to flag
@@ -88,8 +88,8 @@ The skill is **on** by default. The user can disable or re-enable it for the res
 - **Slash command** (preferred — discoverable via `/` autocomplete):
   - `/nativish:off` — disable
   - `/nativish:on` — re-enable
-- **Inline marker** (works in any chat message; colon or space both accepted):
+- **Inline marker** (works in any chat message; colon or space both accepted; the marker must be the entire message):
   - `nativish:off` or `nativish off` — disable
   - `nativish:on` or `nativish on` — re-enable
 
-Once disabled, output `✓ en-coach` for every message until re-enabled — do not coach. When the user fires `nativish:on`, resume normal coaching from the next message.
+When disabled, output `⏸ en-coach (off)` for every message instead of `✓ en-coach` — do not coach. The distinct marker tells the user the coach is paused, not just silently passing the message. When the user fires `nativish:on`, resume normal coaching from the next message.
