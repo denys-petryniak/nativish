@@ -11,23 +11,23 @@ When enabled, before every response coach the user's prompt. Pick one of two out
 
 ```
 Slash command, short ack, or already clear?  →  ✓ prompt-coach (skip)
-Vague intent, missing context, or ambiguity?  →  Full box (enhanced + diff)
+Vague intent, missing context, or ambiguity?  →  Full block (enhanced + diff)
 ```
 
-### Mode 1 — Full box
+### Mode 1 — Full block
 
 Use when the prompt would benefit from being clearer, more specific, or more complete.
 
 ```
-┌─ Prompt coach ─────
+─── Prompt coach ───
 
-**Enhanced prompt:** "..."
+**Enhanced:** "..."
 
 **What changed:**
-- ...
-- ...
+1. ...
+2. ...
 
-└─────────────────────
+──────────────────────
 ```
 
 - **Enhanced prompt** — the user's message rewritten for Claude. Add missing context, reduce ambiguity, make intent explicit.

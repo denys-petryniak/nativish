@@ -11,43 +11,44 @@ Before every response, coach the user's English. Pick one of three output modes,
 
 ```
 Slash command or 1–2 word ack?  →  ✓ en-coach (skip)
-Real mistakes to fix?            →  Full box (table)
+Real mistakes to fix?            →  Full block (numbered fixes)
 Clean, or one-off typo?          →  One-line compliment
 ```
 
-### Mode 1 — Full box
+The full block uses slim Unicode dividers (not pipe-tables) because Claude Code renders CommonMark, which doesn't support GFM tables.
+
+### Mode 1 — Full block
 
 Use when the prompt has real mistakes (grammar, missing words, wrong word, proper-noun casing).
 
 ```
-┌─ English check ─────
+─── English check ───
 
-**Corrected prompt:** "..."
+**Corrected:** "..."
 
-| # | Original | Corrected | Issue |
-|---|---|---|---|
-| ... |
+1. "<original>" → "<corrected>" — <issue>
+2. ...
 
-└─────────────────────
+──────────────────────
 ```
 
-- **Corrected prompt** — the user's message rewritten in correct English. For prompts of 3+ sentences, show only the first 2–3 corrected sentences if the rest is clean.
-- **Table** — 2–5 rows, ordered by impact: grammar/meaning first, then spelling/articles.
+- **Corrected** — the user's message rewritten in correct English. For prompts of 3+ sentences, show only the first 2–3 corrected sentences if the rest is clean.
+- **Numbered list** — 2–5 fixes, ordered by impact: grammar/meaning first, then spelling/articles. Each item: original → corrected — issue.
 
 ### Mode 2 — Compliment
 
 Use when the prompt is clean, or has only a one-off typo (single missing/swapped letter, finger-slip).
 
 ```
-┌─ English check ─────
+─── English check ───
 
 🌱 Strong English — keep growing.
 _typo: "lets" → "let's"_
 
-└─────────────────────
+──────────────────────
 ```
 
-- Wrap the compliment in the same box as Mode 1, so the boundary between coaching and answer is always clear.
+- Wrap the compliment in the same dividers as Mode 1, so the boundary between coaching and answer is always clear.
 - One short line, under ~8 words, with an emoji.
 - Celebrate fluency or progress — never generic praise.
 - Never repeat wording or emoji back-to-back.

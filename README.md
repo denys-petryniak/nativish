@@ -19,22 +19,21 @@ Two skills activate at session start.
 
 Before every response, Claude inspects your prompt:
 
-- Real grammar, spelling, or word-choice mistakes → a corrected version plus a small table explaining each fix
+- Real grammar, spelling, or word-choice mistakes → a corrected version plus a numbered list of fixes
 - Clean prompt → a one-line compliment
 - Slash command or short ack (`yes`, `ok`, `thanks`) → silent
 
 Example output when fixes are needed:
 
 ```text
-┌─ English check ─────
+─── English check ───
 
-**Corrected prompt:** "..."
+**Corrected:** "..."
 
-| # | Original | Corrected | Issue |
-|---|---|---|---|
-| ... |
+1. "<original>" → "<corrected>" — <issue>
+2. ...
 
-└─────────────────────
+──────────────────────
 ```
 
 Toggle:
