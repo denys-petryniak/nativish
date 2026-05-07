@@ -2,7 +2,7 @@
   "name": "nativish",
   "owner": { "name": "Denys Petryniak" },
   "metadata": {
-    "description": "nativish — writing coach plugin for Claude Code",
+    "description": "Nativish — writing coach plugin for Claude Code",
     "version": "0.3.0"
   },
   "plugins": [

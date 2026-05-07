@@ -1,4 +1,4 @@
-# nativish
+# Nativish
 
 [![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest)
 [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE)
@@ -45,6 +45,6 @@ Toggle:
 
 A `SessionStart` hook injects the English-coaching skill into the conversation's system context, so the rule applies on every user message — no manual skill invocation needed.
 
-## Why "nativish"?
+## Why "Nativish"?
 
 A coined word — *almost native*. The plugin won't turn you into a native speaker, but it nudges your written English a little closer every conversation.
