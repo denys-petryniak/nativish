@@ -37,8 +37,9 @@ Example output when fixes are needed:
 
 Toggle:
 
-- `coach:en off` — disable for the conversation
-- `coach:en on` — re-enable
+- `/nativish:off` — disable for the conversation (slash command, autocompletes after `/`)
+- `/nativish:on` — re-enable
+- Inline aliases: `nativish:off` / `nativish:on` (or with a space: `nativish off` / `nativish on`) — handy if you'd rather type than autocomplete
 
 ## How it works
 
