@@ -1,0 +1,9 @@
+{
+  "name": "nativish",
+  "description": "Writing coach for non-native speakers — corrects the user's English before each response, with optional prompt enhancement",
+  "version": "0.1.0",
+  "author": {
+    "name": "Denys Petryniak"
+  },
+  "keywords": ["english", "coaching", "language", "grammar", "writing", "non-native"]
+}
