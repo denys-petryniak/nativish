@@ -1,5 +1,8 @@
 # nativish
 
+[![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest)
+[![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE)
+
 A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) — corrects your English before every response. Built for non-native speakers who code with Claude.
 
 ## Install
