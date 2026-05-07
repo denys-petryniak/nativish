@@ -2,8 +2,24 @@
 
 [![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest)
 [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin)
+[![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
+[![Made for non-natives](https://img.shields.io/badge/made%20for-non--natives-7c3aed)](https://github.com/denys-petryniak/nativish)
 
 A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) — corrects your English before every response. Built for non-native speakers who code with Claude.
+
+> ```text
+> ─── English check ───
+>
+> **Corrected:** "I want to install this plugin from the marketplace."
+>
+> 1. "i want install" → "I want to install" — pronoun case + missing "to"
+> 2. "from marketplace" → "from the marketplace" — missing article
+>
+> ──────────────────────
+> ```
+>
+> *Every message you send gets coached, inline, before the answer.*
 
 ## Install
 
@@ -21,19 +37,6 @@ Before every response, Claude inspects your prompt:
 - Real grammar, spelling, or word-choice mistakes → a corrected version plus a numbered list of fixes
 - Clean prompt → a one-line compliment
 - Slash command, short ack (`yes`, `ok`, `thanks`), or message in a non-Latin script → silent
-
-Example output when fixes are needed:
-
-```text
-─── English check ───
-
-**Corrected:** "..."
-
-1. "<original>" → "<corrected>" — <issue>
-2. ...
-
-──────────────────────
-```
 
 Toggle:
 
