@@ -4,7 +4,6 @@
 [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin)
 [![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
-[![Made for non-natives](https://img.shields.io/badge/made%20for-non--natives-7c3aed)](https://github.com/denys-petryniak/nativish)
 
 A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) — corrects your English before every response. Built for non-native speakers who code with Claude.
 
