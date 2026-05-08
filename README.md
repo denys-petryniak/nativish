@@ -53,3 +53,7 @@ A `SessionStart` hook injects the English-coaching skill into the conversation's
 ## Why "Nativish"?
 
 A coined word — *almost native*. The plugin won't turn you into a native speaker, but it nudges your written English a little closer every conversation.
+
+---
+
+*Made with Claude, for Claude.* 🧡
