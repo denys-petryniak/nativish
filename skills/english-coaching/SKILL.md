@@ -38,7 +38,7 @@ Use when the prompt has real mistakes (grammar, missing words, wrong word, prope
 ──────────────────────
 ```
 
-- **Corrected** — the user's message rewritten in correct English. For prompts of 3+ sentences, show only the first 2–3 corrected sentences if the rest is clean.
+- **Corrected** — the user's message rewritten in correct English. Show at most the first 2–3 corrected sentences. For longer prompts, stop after the third sentence and append `…` (do **not** quote the rest) — fixes for later sentences still go in the numbered list below.
 - **Numbered list** — 2–5 fixes, ordered by impact: grammar/meaning first, then spelling/articles. Each item: original → corrected — issue.
 
 ### Mode 2 — Compliment
