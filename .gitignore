@@ -12,3 +12,6 @@
 
 # Node (in case future tooling lands here)
 node_modules/
+
+# Claude Code project — personal overrides
+.claude/settings.local.json
