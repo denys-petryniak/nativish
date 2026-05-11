@@ -54,6 +54,17 @@ Status markers tell you which state the coach is in at a glance:
 
 A `SessionStart` hook injects the English-coaching skill into the conversation's system context, so the rule applies on every user message — no manual skill invocation needed.
 
+## Privacy & security
+
+Nativish is a self-contained Markdown + shell plugin:
+
+- **No network calls** beyond the standard Anthropic API that Claude Code itself uses.
+- **No telemetry**, no analytics, no external services.
+- **No system file modifications** — the plugin only injects text into the conversation context via the `SessionStart` hook.
+- **No elevated permissions required** — does not request bypass-permissions mode or any permission overrides.
+
+The full installation is a few Markdown files and one shell script that `cat`s them. Inspect everything in [`hooks/`](hooks/) and [`skills/english-coaching/`](skills/english-coaching/).
+
 ## Known limitations
 
 - **Model variance.** The skill's output format (Modes 1/2/3) is enforced via prose rules, so compliance varies by model. Opus follows the rules reliably; Sonnet (the default for many setups) occasionally drifts — wrapping a Mode 3 marker in dividers, or skipping the coaching block on a long input. The adversarial fixture suite at `tests/adversarial-prompts.md` catches drift; expect a high-but-not-perfect pass rate on Sonnet.
