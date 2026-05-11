@@ -66,7 +66,7 @@ Sample tones:
 
 ### Mode 3 — Skip (just `✓ en-coach`)
 
-Use when there's nothing to coach. Show only the active-state marker to confirm the rule is on: `✓ en-coach` in default mode, `✓ en-coach (strict)` in strict mode, `⏸ en-coach (off)` when disabled (see **State** below).
+Use when there's nothing to coach. Output **only** the active-state marker on its own line — `✓ en-coach` in default mode, `✓ en-coach (strict)` in strict mode, `⏸ en-coach (off)` when disabled. **Do NOT wrap the marker in dividers.** Mode 3 is intentionally minimal: the bare marker IS the entire coaching output, then proceed with the task answer.
 
 - **Short acknowledgments** — `yes`, `no`, `ok`, `sure`, `thanks`, `thx`, `nope`, `cool`, `great`, `nice`, `done`, `got it`, `sounds good`. A compliment on a one-word reply feels weird.
 - **Slash commands** — message starts with `/` (e.g. `/commit`, `/test`, `/pr-create some title`). The command text comes from the skill, not the user's writing. Skip even if arguments follow.
@@ -75,7 +75,7 @@ Use when there's nothing to coach. Show only the active-state marker to confirm 
 
 ## What NOT to flag
 
-These are chat style, not mistakes — left alone in **default mode**. In **strict mode** (see **State** below), the first four become real fixes; embedded non-Latin words stay untouched in both modes.
+These are chat style, **not mistakes** — left alone in **default mode**. Do not invent fixes for them. In **strict mode** (see **State** below), the first four become real fixes; embedded non-Latin words stay untouched in both modes.
 
 - **Lowercase first letter** — `is it useful?` *(strict mode: flag — capitalize)*
 - **Missing terminal period** *(strict mode: flag — add)*
@@ -83,7 +83,17 @@ These are chat style, not mistakes — left alone in **default mode**. In **stri
 - **Common abbreviations** — `smth`, `wdyt`, `pls`, `tbh`, `imo` *(strict mode: flag — expand to `something`, `what do you think`, `please`, etc.)*
 - **Embedded non-Latin words** — in an otherwise-English prompt, treat Cyrillic/CJK/Arabic/etc. words as proper nouns. Example: `fix bug в auth.ts` — coach the English, leave `в` alone. Same for filenames, identifiers, or terms in another language. *(both modes)*
 
-**Do flag (both modes):** proper nouns and acronyms — `i` → `I`, `github` → `GitHub`, `eng` → `English`.
+**ALWAYS flag (both modes):**
+
+- **Lowercase pronoun `i`** → `I`. The one casing rule that overrides chat-style forgiveness.
+- **Proper nouns and acronyms** — `github` → `GitHub`, `eng` → `English`.
+
+### Correct default-mode behavior — examples
+
+- `dont forget` → Mode 2 compliment. Leave `dont` alone.
+- `pls help` → Mode 2 compliment. Leave `pls` alone.
+- `i need help` → Mode 1, the only fix is `i → I`.
+- `is it ready?` → Mode 2 compliment. Leave lowercase `is` alone.
 
 ## State
 
