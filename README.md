@@ -9,18 +9,7 @@ A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) 
 
 ![Nativish demo](assets/nativish-demo.png)
 
-> ```text
-> ─── English check ───
->
-> **Corrected:** "I want to install this plugin from the marketplace."
->
-> 1. "i want install" → "I want to install" — pronoun case + missing "to"
-> 2. "from marketplace" → "from the marketplace" — missing article
->
-> ──────────────────────
-> ```
->
-> *Every message you send gets coached, inline, before the answer.*
+*Every message you send gets coached, inline, before the answer.*
 
 ## Install
 
