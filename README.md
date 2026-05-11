@@ -7,7 +7,7 @@
 
 A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) — corrects your English before every response. Built for non-native speakers who code with Claude.
 
-![Nativish demo](assets/nativish-demo.gif)
+![Nativish demo](https://github.com/denys-petryniak/nativish/releases/download/v0.5.2/nativish-demo.gif)
 
 > ```text
 > ─── English check ───
