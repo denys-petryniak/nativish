@@ -1,7 +1,7 @@
 {
   "name": "nativish",
   "description": "Writing coach for non-native speakers — corrects the user's English before each response",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": {
     "name": "Denys Petryniak"
   },
