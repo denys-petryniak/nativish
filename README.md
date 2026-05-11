@@ -39,11 +39,16 @@ Before every response, Claude inspects your prompt:
 
 Toggle:
 
-- `/nativish:off` — disable for the conversation (slash command, autocompletes after `/`)
-- `/nativish:on` — re-enable
-- Inline aliases: `nativish:off` / `nativish:on` (or with a space: `nativish off` / `nativish on`) — handy if you'd rather type than autocomplete. The marker must be the entire message, so pasting a doc that mentions `nativish:off` won't accidentally disable the coach.
+- `/nativish:off` — disable for the conversation
+- `/nativish:on` — switch to default mode (chat-forgiving)
+- `/nativish:strict` — switch to strict mode (also flags missing apostrophes, lowercase first letter, missing terminal periods, and common abbreviations)
+- Inline aliases: `nativish:off` / `nativish:on` / `nativish:strict` (or with a space: `nativish off`, etc.) — handy if you'd rather type than autocomplete. The marker must be the entire message, so pasting a doc that mentions one of them won't accidentally switch states.
 
-While disabled, every reply shows `⏸ en-coach (off)` (instead of the active `✓ en-coach`) so you can tell at a glance whether the coach is paused or just had nothing to flag.
+Status markers tell you which state the coach is in at a glance:
+
+- `✓ en-coach` — default mode (active, chat-forgiving)
+- `✓ en-coach (strict)` — strict mode (active, flags chat-style typos too)
+- `⏸ en-coach (off)` — disabled
 
 ## How it works
 

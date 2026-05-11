@@ -1,6 +1,6 @@
 ---
 name: english-coaching
-description: Use when responding to ANY user message — coaches the user's English before each response. Enabled by default for non-native English speakers; user can toggle with `/nativish:off` / `/nativish:on` (or the inline markers `nativish:off` / `nativish:on`).
+description: Use when responding to ANY user message — coaches the user's English before each response. Enabled by default for non-native English speakers; toggle with `/nativish:off`, `/nativish:on`, or `/nativish:strict` (or the matching `nativish:*` inline markers).
 ---
 
 # English Coaching
@@ -68,34 +68,42 @@ Sample tones (invent your own in this spirit):
 
 ### Mode 3 — Skip (just `✓ en-coach`)
 
-Use when there's nothing to coach. Show only `✓ en-coach` to confirm the rule is active.
+Use when there's nothing to coach. Show only the active-state marker to confirm the rule is on: `✓ en-coach` in default mode, `✓ en-coach (strict)` in strict mode, `⏸ en-coach (off)` when disabled (see **State** below).
 
 - **Short acknowledgments** — `yes`, `no`, `ok`, `sure`, `thanks`, `thx`, `nope`, `cool`, `great`, `nice`, `done`, `got it`, `sounds good`. A compliment on a one-word reply feels weird.
 - **Slash commands** — message starts with `/` (e.g. `/commit`, `/test`, `/pr-create some title`). The command text comes from the skill, not the user's writing. Skip even if arguments follow.
-- **Toggle markers** — the message *is* exactly `nativish:off`, `nativish:on`, `nativish off`, or `nativish on` (after trimming whitespace, case-insensitive). It must be the entire message — do **not** treat a marker mentioned inside pasted text, code, logs, or longer prose as a toggle. These are control directives, not English to coach. See **State** below.
+- **Toggle markers** — the message *is* exactly `nativish:off`, `nativish:on`, `nativish:strict`, or their space-separated variants (`nativish off`, `nativish on`, `nativish strict`) — after trimming whitespace, case-insensitive. It must be the entire message — do **not** treat a marker mentioned inside pasted text, code, logs, or longer prose as a toggle. These are control directives, not English to coach. See **State** below.
 - **Non-Latin script** — the message is predominantly written in a non-Latin script (Cyrillic, CJK, Arabic, Hebrew, Greek, Devanagari, Thai, etc.). It's not English — there's nothing to coach. For mixed messages (mostly English with a few non-Latin words), don't skip — coach the English part normally and leave the non-Latin words alone (see "What NOT to flag").
 
 ## What NOT to flag
 
-These are chat style, not mistakes:
+These are chat style, not mistakes — left alone in **default mode**. In **strict mode** (see **State** below), the first four become real fixes; embedded non-Latin words stay untouched in both modes.
 
-- **Lowercase first letter** — `is it useful?`
-- **Missing terminal period**
-- **Missing apostrophe in contractions** — `dont`, `cant`, `lets`
-- **Common abbreviations** — `smth`, `wdyt`, `pls`, `tbh`, `imo`
-- **Embedded non-Latin words** — in an otherwise-English prompt, treat Cyrillic/CJK/Arabic/etc. words as proper nouns. Example: `fix bug в auth.ts` — coach the English, leave `в` alone. Same for filenames, identifiers, or terms in another language.
+- **Lowercase first letter** — `is it useful?` *(strict mode: flag — capitalize)*
+- **Missing terminal period** *(strict mode: flag — add)*
+- **Missing apostrophe in contractions** — `dont`, `cant`, `lets` *(strict mode: flag — `don't`, `can't`, `let's`)*
+- **Common abbreviations** — `smth`, `wdyt`, `pls`, `tbh`, `imo` *(strict mode: flag — expand to `something`, `what do you think`, `please`, etc.)*
+- **Embedded non-Latin words** — in an otherwise-English prompt, treat Cyrillic/CJK/Arabic/etc. words as proper nouns. Example: `fix bug в auth.ts` — coach the English, leave `в` alone. Same for filenames, identifiers, or terms in another language. *(both modes)*
 
-**Do flag:** proper nouns and acronyms — `i` → `I`, `github` → `GitHub`, `eng` → `English`.
+**Do flag (both modes):** proper nouns and acronyms — `i` → `I`, `github` → `GitHub`, `eng` → `English`.
 
 ## State
 
-The skill is **on** by default. The user can disable or re-enable it for the rest of the conversation in two equivalent ways:
+The skill is **on** by default in **default mode**. There are three states:
+
+- **default** — chat-forgiving coaching. Items in "What NOT to flag" stay alone. Status marker: `✓ en-coach`.
+- **strict** — coaches *everything* in "What NOT to flag" (except embedded non-Latin words) as real fixes. Status marker: `✓ en-coach (strict)`.
+- **off** — no coaching. Status marker: `⏸ en-coach (off)`.
+
+The user can switch between states for the rest of the conversation in two equivalent ways:
 
 - **Slash command** (preferred — discoverable via `/` autocomplete):
   - `/nativish:off` — disable
-  - `/nativish:on` — re-enable
+  - `/nativish:on` — switch to default mode (works from off OR strict)
+  - `/nativish:strict` — switch to strict mode (works from off OR default)
 - **Inline marker** (works in any chat message; colon or space both accepted; the marker must be the entire message):
-  - `nativish:off` or `nativish off` — disable
-  - `nativish:on` or `nativish on` — re-enable
+  - `nativish:off` or `nativish off`
+  - `nativish:on` or `nativish on`
+  - `nativish:strict` or `nativish strict`
 
-When disabled, output `⏸ en-coach (off)` for every message instead of `✓ en-coach` — do not coach. The distinct marker tells the user the coach is paused, not just silently passing the message. When the user fires `nativish:on`, resume normal coaching from the next message.
+The status marker (`✓ en-coach`, `✓ en-coach (strict)`, `⏸ en-coach (off)`) only appears in Mode 3 skips — in Mode 1/2 the coaching block itself signals the active state. When disabled, output `⏸ en-coach (off)` for every message and do not coach. When a toggle marker is fired, the response *is* a Mode 3 skip showing the new state's marker — that's the user's confirmation that the switch took effect.
