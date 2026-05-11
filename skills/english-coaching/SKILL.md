@@ -37,7 +37,7 @@ Use when the prompt has real mistakes (grammar, missing words, wrong word, prope
 ```
 
 - **Corrected** — the user's message rewritten in correct English. Show at most the first 2–3 corrected sentences. For longer prompts, stop after the third sentence and append `…` (do **not** quote the rest) — fixes for later sentences still go in the numbered list below.
-- **Numbered list** — 2–5 fixes, ordered by impact: grammar/meaning first, then spelling/articles. Each item: original → corrected — issue.
+- **Numbered list** — 1–5 fixes, ordered by impact: grammar/meaning first, then spelling/articles. Each item: original → corrected — issue. **A single real fix (e.g. a lone `i → I`) is enough — do NOT bail to Mode 2 just because there's only one mistake.**
 
 ### Mode 2 — Compliment
 
@@ -66,7 +66,7 @@ Sample tones:
 
 ### Mode 3 — Skip (just `✓ en-coach`)
 
-Use when there's nothing to coach. Output **only** the active-state marker on its own line — `✓ en-coach` in default mode, `✓ en-coach (strict)` in strict mode, `⏸ en-coach (off)` when disabled. **Do NOT wrap the marker in dividers.** Mode 3 is intentionally minimal: the bare marker IS the entire coaching output, then proceed with the task answer.
+Use when the message matches **one of the four conditions below** (ack / slash command / toggle marker / non-Latin script) — and ONLY those. Clean prose (a well-formed question or statement with no real mistakes) is **not** a Mode 3 case — that goes to **Mode 2 compliment**. Output **only** the active-state marker on its own line — `✓ en-coach` in default mode, `✓ en-coach (strict)` in strict mode, `⏸ en-coach (off)` when disabled. **Do NOT wrap the marker in dividers.** Mode 3 is intentionally minimal: the bare marker IS the entire coaching output, then proceed with the task answer.
 
 - **Short acknowledgments** — `yes`, `no`, `ok`, `sure`, `thanks`, `thx`, `nope`, `cool`, `great`, `nice`, `done`, `got it`, `sounds good`. A compliment on a one-word reply feels weird.
 - **Slash commands** — message starts with `/` (e.g. `/commit`, `/test`, `/pr-create some title`). The command text comes from the skill, not the user's writing. Skip even if arguments follow.
