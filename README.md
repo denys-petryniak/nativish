@@ -54,6 +54,12 @@ Status markers tell you which state the coach is in at a glance:
 
 A `SessionStart` hook injects the English-coaching skill into the conversation's system context, so the rule applies on every user message — no manual skill invocation needed.
 
+## Known limitations
+
+- **Model variance.** The skill's output format (Modes 1/2/3) is enforced via prose rules, so compliance varies by model. Opus follows the rules reliably; Sonnet (the default for many setups) occasionally drifts — wrapping a Mode 3 marker in dividers, or skipping the coaching block on a long input. The adversarial fixture suite at `tests/adversarial-prompts.md` catches drift; expect a high-but-not-perfect pass rate on Sonnet.
+- **Pasted content gets coached too.** Code, logs, error messages, quoted prose — all of it is treated as text to check. Expect occasional false flags on snippets you didn't write.
+- **Long prompts are truncated in `Corrected:`.** Only the first 2–3 sentences are echoed back; fixes for later sentences still appear in the numbered list below.
+
 ## Why "Nativish"?
 
 A coined word — *almost native*. The plugin won't turn you into a native speaker, but it nudges your written English a little closer every conversation.
