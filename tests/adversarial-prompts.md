@@ -4,6 +4,16 @@ Manual fixture suite for the `english-coaching` skill. Run before each release t
 
 ## How to run
 
+**Automated (recommended for single-shot cases):**
+
+```bash
+tests/run-fixtures.sh
+```
+
+Uses `claude -p` per case and LLM-as-judge for verdicts. Skips multi-step cases (T2, T3, ST6, ST7) and strict-mode-active cases (ST2–ST5) — those must still be run manually below.
+
+**Manual:**
+
 1. Start a fresh Claude Code session with the plugin installed (or run `/clear` to re-fire `SessionStart`).
 2. For each case, send the **Input** as a single message.
 3. Verify the response matches the **Expected** behavior.

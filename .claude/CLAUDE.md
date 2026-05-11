@@ -24,8 +24,9 @@ Pushing a tag does **not** auto-create a GitHub Release. Both steps are required
 
 Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fixture suite at `tests/adversarial-prompts.md`:
 
-- Run the suite manually before tagging a release (instructions at the top of the file).
-- New behavior requires a new fixture case. Group related cases under a `##` section — see `## Strict mode` for the pattern.
+- Run `tests/run-fixtures.sh` before tagging a release — covers single-shot cases via `claude -p` + LLM-as-judge.
+- Multi-step cases (T2, T3, ST6, ST7) and strict-mode-active cases (ST2–ST5) must still be run manually per the suite doc.
+- New behavior requires a new fixture case in both `adversarial-prompts.md` and `run-fixtures.sh`. Group related cases under a `##` section — see `## Strict mode` for the pattern.
 - Treat any deviation from the **Expected** column as a regression.
 
 ## Superpowers skills (when available)
