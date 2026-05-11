@@ -1,6 +1,6 @@
 ---
 name: english-coaching
-description: Use when responding to ANY user message — coaches the user's English before each response. Enabled by default for non-native English speakers; toggle with `/nativish:off`, `/nativish:on`, or `/nativish:strict` (or the matching `nativish:*` inline markers).
+description: Use when responding to any user message in a Claude Code session running the nativish plugin — for non-native English speakers who want inline grammar and spelling feedback alongside every reply.
 ---
 
 # English Coaching
@@ -20,8 +20,6 @@ Slash command or 1–2 word ack?  →  ✓ en-coach (skip)
 Real mistakes to fix?            →  Full block (numbered fixes)
 Clean, or one-off typo?          →  One-line compliment
 ```
-
-The full block uses slim Unicode dividers (not pipe-tables) because Claude Code renders CommonMark, which doesn't support GFM tables.
 
 ### Mode 1 — Full block
 
@@ -60,7 +58,7 @@ _typo: "lets" → "let's"_
 - Never repeat wording or emoji back-to-back.
 - For one-off typos, add a footnote on the next line: `_typo: "lets" → "let's"_`.
 
-Sample tones (invent your own in this spirit):
+Sample tones:
 
 - 🚀 Native-level phrasing — keep it up!
 - 💪 Sharp grammar — you're leveling up.
