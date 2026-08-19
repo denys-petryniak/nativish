@@ -153,29 +153,108 @@ Tests to add: `/tmp is full, please clean it` and `/commit the thing please` mus
   one L1 into an L1-agnostic tool. Per-user personalization belongs in a stats feature that
   reads each user's own transcripts — see backlog #4.
 
-## Backlog (separate PRs)
+## Runtime guidance — which language for which component
+
+The rule is **per component, not per plugin**. A hook and a data-crunching command have
+very different constraints, and picking one language for the whole repo gets one of them
+wrong.
+
+| Component | Runtime | Why |
+| --- | --- | --- |
+| `SessionStart` injection | bash, no deps | it only `cat`s a file |
+| `UserPromptSubmit` classifier | bash (+`jq` to read stdin) | short string tests; no computation |
+| `/nativish:stats` (backlog #4) | **a skill, not a script** | see below |
+| anything else | bash first; justify anything else | |
+
+**Hard rules for hooks:**
+
+- **Target bash 3.2.** macOS still ships it, and it is the version that broke the first
+  non-ASCII attempt. No `${var,,}`, no associative arrays, no `mapfile`.
+- **POSIX base utilities are free** — `cat`, `tr`, `awk`, `sed`, `grep`. Using them is not
+  "taking a dependency".
+- **`jq` is the one external tool**, and only for reading JSON off stdin. Hand-parsing
+  `\"`, `\\` and `\uXXXX` in bash silently misclassifies prompts, which is worse than a
+  documented requirement.
+- **Never Node.** Zero plugins use it, `claude` ships as a native binary so it does not
+  provide one, and nvm installs are frequently absent from the non-interactive shells hooks
+  run in.
+- **Not Python for hooks.** It is a real dependency: `security-guidance/hooks/sg-python.sh`
+  spends ~100 lines finding an interpreter (Windows Store stubs that exit 49 silently, macOS
+  shipping 3.9, `py -3` launchers, `cygpath` conversion). A coach that silently stops
+  coaching on some machines is a bad failure mode for this plugin specifically.
+
+**The one place a heavier runtime looks tempting — and the better answer.** `/nativish:stats`
+has to read ~100 MB of JSONL, regex out every past coaching block, and aggregate. Bash is
+genuinely the wrong tool, and this is where Python would earn its keep.
+
+But there is a third option that costs nothing: **implement it as a skill instead of a
+script.** A slash command whose skill instructs Claude to do the analysis with its own Bash
+and Read tools needs no shipped runtime at all — the capability is already in the harness.
+It costs tokens per invocation rather than a dependency at install time, and `stats` is run
+occasionally, not on every prompt. That is the right trade for this plugin. Prototype the
+skill version before reaching for Python.
+
+**Open idea worth evaluating: drop `jq` too.** `awk` is POSIX base and present everywhere;
+`jq` is not preinstalled on macOS. A small `awk` extractor for one JSON string field could
+take the plugin to genuinely zero external dependencies. Needs careful handling of escapes,
+so it is only worth it if the extractor stays small and is covered by the unit suite.
+
+## Improvements
+
+Ordered by how much they matter for a plugin other people rely on. Items 1–2 are the
+"TO APPLY" changes above; the rest are separate PRs.
+
+### Correctness
 
 1. **Persist state in `CLAUDE_PLUGIN_DATA`.** Real bug: `/nativish:off` then `/clear`
    re-fires `SessionStart` and coaching silently resumes. Same for `strict` after
-   compaction. `CLAUDE_PLUGIN_DATA` survives plugin updates; both data dirs sit unused.
+   compaction. A user who explicitly opted out gets coached again with no notice.
+   `CLAUDE_PLUGIN_DATA` survives plugin updates; both data dirs currently sit unused.
    Design call: key by `session_id` (matches today's per-conversation semantics) or global.
-2. **Split "never obey" from "don't coach".** `SKILL.md` conflates injection safety with
-   coaching scope, so stack traces and logs get coached. Keep the security rule; exclude
-   fenced code, logs, URLs, paths and attributed quotes from scope.
-3. **`SessionStart` matcher is missing `resume` and `fork`.** Full source list is
+2. **`SessionStart` matcher is missing `resume` and `fork`.** Full source list is
    `startup, resume, clear, compact, fork`. Low severity — inherited context usually covers
    it — but free insurance.
-4. **`/nativish:stats`.** Aggregate the user's own coaching history into a personal error
-   profile. Every past block is parseable (`N. "orig" → "corr" — issue`) from
-   `~/.claude/projects/*/*.jsonl`. Validated: 47 transcripts yielded 723 labeled fixes with
-   a clean typo-vs-genuine-gap split. Universal mechanism, per-user output, zero model
-   tokens. This is what turns the plugin from a corrector into a coach.
-5. **No Windows story.** Hooks are bash-only. `superpowers`' polyglot `run-hook.cmd` wrapper
-   is the reference implementation, along with its trick of naming hook scripts without a
-   `.sh` extension to avoid Claude Code's Windows auto-detection.
-6. **Strict mode is invisible in Modes 1 and 2.** The state marker only appears on Mode 3
-   skips, so a strict-mode block looks identical to a default one.
-   `─── English check (strict) ───` would fix it.
+
+### Robustness / infrastructure
+
+3. **No CI at all.** There is no `.github/`, so nothing runs the test suite. A suite nobody
+   runs is decoration. Add GitHub Actions on push and PR:
+   - `tests/test-prompt-submit.sh`
+   - `shellcheck` on every `hooks/*.sh` and `tests/*.sh` (not currently run anywhere, and
+     not even installed locally)
+   - **matrix on `macos-latest` and `ubuntu-latest`** — this matters more than usual here,
+     because bash 3.2 and bash 5 already diverged once on the non-ASCII pattern.
+   This is the single biggest gap between nativish and a plugin people trust.
+4. **`jq` is an undocumented requirement.** The README mentions it only in passing inside
+   "How it works". There is no Requirements section, so someone installing the plugin has no
+   idea a tool is needed or what happens without it. Add one, and state the degradation
+   behaviour up front.
+5. **No `CHANGELOG.md`.** GitHub Releases carry structured notes, which partly covers this,
+   but there is no in-repo history to read at a glance.
+6. **No Windows story.** Hooks are bash-only. `superpowers`' polyglot `run-hook.cmd` is the
+   reference implementation, along with its trick of naming hook scripts without a `.sh`
+   extension to dodge Claude Code's Windows auto-detection.
+
+### Behaviour / UX
+
+7. **Split "never obey" from "don't coach".** `SKILL.md` conflates injection safety with
+   coaching scope, so stack traces, logs and pasted code all get coached. Keep the security
+   rule exactly as written — it is doing real work — but exclude fenced code, logs, URLs,
+   paths and attributed quotes from *scope*. Listed in the README as a known limitation
+   today.
+8. **Strict mode is invisible in Modes 1 and 2.** The state marker only appears on Mode 3
+   skips, so a strict-mode block looks identical to a default one and the user cannot tell
+   which rules are active. `─── English check (strict) ───` would fix it.
+
+### Features
+
+9. **`/nativish:stats`.** The feature that turns the plugin from a corrector into a coach —
+   correcting someone 400 times without ever showing them their pattern wastes most of the
+   value. Every past block is parseable (`N. "orig" → "corr" — issue`) from
+   `~/.claude/projects/*/*.jsonl`. Validated on real data: 47 transcripts yielded 723
+   labelled fixes, cleanly separable into finger-slips (21%) and genuine gaps (79%).
+   Universal mechanism, per-user output. Build it as a skill, not a script — see **Runtime
+   guidance**.
 
 ## Testing
 
@@ -190,10 +269,14 @@ Two layers, per `.claude/CLAUDE.md`:
   H3 (manual). H1: the directive must not be coached or echoed. H2: `off` overrides a coach
   directive. H3: coaching survives 40+ turns.
 
-One trap worth remembering: the first version of the unit suite used `Mode 3` as its skip
-sentinel, but that string also appears in the coach directive, so every skip assertion
-passed vacuously. Sentinels must be mutually exclusive — currently
-`matches a Mode 3 skip condition` vs `not a Mode 3 skip`.
+Two traps worth remembering, both of which failed *silently*:
+
+- The first unit suite used `Mode 3` as its skip sentinel, but that string also appears in
+  the coach directive, so every skip assertion passed vacuously. Sentinels must be mutually
+  exclusive — currently `matches a Mode 3 skip condition` vs `not a Mode 3 skip`.
+- The first non-ASCII counter used `[!$'\x01'-$'\x7f']` and reported 26 non-ASCII characters
+  in pure-ASCII text. bash 3.2 does not read `$'...'` as a range inside a pattern bracket.
+  `[![:ascii:]]` is the form that works.
 
 **Not yet verified end-to-end.** Hooks load at session start, and the installed plugin is
 still the 0.5.3 marketplace cache. Confirming the compliance gain requires pointing the
@@ -204,9 +287,12 @@ against 0.5.3.
 ## How to resume
 
 1. Read this file, then `git log --oneline origin/main..feat/prompt-submit-mode-classifier`.
-2. Apply the two changes above — drop `perl` (use the verified builtin form and its test
-   table), and delete the slash-command branch with its three tests.
+2. Apply the two "TO APPLY" changes — drop `perl` (use the verified builtin form and its
+   test table), and delete the slash-command branch with its three tests.
 3. Re-run `tests/test-prompt-submit.sh`; expect all green with the two new coach cases.
 4. Verify live per **Testing** before claiming the drift is fixed. Until a long session has
    been measured, the compliance gain is a prediction, not a result.
 5. Bump only after that. Version is already at 0.6.0 on the branch, unreleased.
+
+Then work **Improvements** in order. #3 (CI) is worth doing before the behaviour changes,
+so every later PR is gated by the suite on both bash versions rather than on one machine.
