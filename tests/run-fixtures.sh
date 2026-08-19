@@ -155,6 +155,16 @@ run_case "N2" \
 'i think this works' \
 'Mode 1 with i → I as a fix. Lowercase i is the one casing rule the skill always enforces.'
 
+# === Hook directive ===
+# The classifier itself is covered by tests/test-prompt-submit.sh (no model needed).
+
+run_case "H1" \
+'i need halp with teh tests' \
+'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in Corrected: and must not generate any numbered fix of its own.'
+
+skip_case "H2" "Multi-step (off → message, directive must not override off) — run manually"
+skip_case "H3" "Requires a 40+ turn session to test depth compliance — run manually"
+
 # === Strict mode ===
 
 run_case "ST1" \

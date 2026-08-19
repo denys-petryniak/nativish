@@ -143,6 +143,32 @@ Send each as a standalone message:
 
 ---
 
+## Hook directive
+
+The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into context before each response. These cases lock in that the directive is obeyed but never treated as user text. The classifier itself is covered separately by `tests/test-prompt-submit.sh`, which needs no model.
+
+### H1 · Directive must not be coached or echoed
+
+**Input:**
+> i need halp with teh tests
+
+**Expected:** Mode 1 coaching of the user's prompt only — fixes for `i` → `I`, `halp` → `help`, `teh` → `the`. The reply must **not** quote or echo the `[nativish] Hook directive` line, must not include it in **Corrected:**, and must not raise fixes against its wording (e.g. flagging `NOT` casing).
+
+### H2 · Off state overrides a coach directive
+
+1. Send: `nativish:off`
+2. Send: `i need halp`
+
+**Expected:** Step 2 shows `⏸ en-coach (off)` with no coaching block, even though the hook injected a directive telling Claude to coach. The hook cannot read plugin state, so the off state always wins.
+
+### H3 · Coaching survives conversation depth
+
+Hold a session past 40 exchanges of ordinary work, then send a prompt with an obvious mistake (e.g. `i want to chekc the logs`).
+
+**Expected:** Mode 1 coaching, same as at turn 1. This is the regression the hook exists to prevent — before it, compliance measured 94% over turns 1–5 and 57% past turn 40.
+
+---
+
 ## Strict mode
 
 These cases assume strict mode is **on** (send `nativish:strict` before each block, and `nativish:on` after to reset). The status marker on Mode 3 skips while strict is `✓ en-coach (strict)`.
