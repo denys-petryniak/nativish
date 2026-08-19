@@ -1,6 +1,6 @@
 # Spec — `UserPromptSubmit` mode classifier
 
-**Status:** shipped in PR #1 (bash + jq + perl). One open decision: the hook runtime.
+**Status:** shipped in PR #1. Two changes still to apply before merge (below).
 **Branch:** `feat/prompt-submit-mode-classifier` · **PR:** https://github.com/denys-petryniak/nativish/pull/1
 **Last updated:** 2026-08-19
 
@@ -53,7 +53,7 @@ Two constraints that shaped the design:
 `SKILL.md` gained a section stating that a `[nativish] Hook directive` line is control
 context: obey it, never coach, quote, or echo it.
 
-## Cost (measured, real tokenizer)
+## Cost (measured with a real tokenizer)
 
 | | Before | After |
 | --- | --- | --- |
@@ -65,85 +65,93 @@ Re-injecting the full rulebook per prompt would have cost 95,900 tokens over the
 prompts. That is why the hook sends a directive rather than the rules.
 
 Reference figures from the same measurement: Mode 1 blocks are 84 tok median (n=300),
-Mode 2 compliments 21 tok (n=47). **Do not bother optimizing Mode 2** — it is already
-cheap and rare; an earlier plan to collapse it was based on a bad estimate.
+Mode 2 compliments 21 tok (n=47). **Do not bother optimizing Mode 2** — it is already cheap
+and rare; an earlier plan to collapse it rested on a bad estimate.
 
 ---
 
-## OPEN DECISION — hook runtime
+## TO APPLY — 1. Drop `perl`, keep the non-Latin check
 
-The shipped implementation is bash + `jq` + `perl`. Both external tools are off-pattern for
-this ecosystem, and the language is hard to read. Not yet resolved.
+Shell is the right language here. Node is used by zero plugins, `claude` ships as a native
+binary so it does not provide one, and nvm-managed installs are often missing from the
+non-interactive shells hooks run in. **Python is also ruled out** — it is a dependency in
+its own right, and the plugin should not acquire one.
 
-### Ecosystem evidence
+`perl` is the only genuinely unusual dependency in the current script, and it turns out to
+be unnecessary. Bash can count non-ASCII characters with builtins alone — no forks, no
+external tools:
 
-Counted across all six installed marketplaces (`~/.claude/plugins`):
+```bash
+latin_only="${s//[!a-zA-Z]/}";    latin=${#latin_only}
+ascii_only="${s//[![:ascii:]]/}"; nonascii=$(( ${#s} - ${#ascii_only} ))
+# non-Latin when nonascii > latin
+```
 
-| Language | Hook files |
-| --- | --- |
-| Shell (`.sh`, extensionless) | 26 |
-| Python 3 | 21 |
-| JavaScript / Node | **0** |
+**Verified on bash 3.2.57**, the macOS system bash — the oldest anyone realistically runs.
+All ten cases classified correctly:
 
-- **superpowers** — pure bash, zero dependencies. Escapes JSON by hand with bash parameter
-  substitution rather than calling `jq`. Ships `run-hook.cmd`, a polyglot bash/batch
-  wrapper for Windows, and names scripts without `.sh` to dodge Claude Code's Windows
-  auto-detection.
-- **Anthropic official** (`hookify`, `security-guidance`) — Python 3 for anything with real
-  logic. `security-guidance` has a `UserPromptSubmit` hook, the same event as ours.
-- `jq` is used only by `warp` and `promosite-skills`. `perl` appears in exactly one file
-  anywhere (`ralph-loop`).
+| Input | nonascii | latin | verdict |
+| --- | --- | --- | --- |
+| `привіт, як справи з білдом?` | 21 | 0 | skip |
+| `修复这个错误` | 6 | 0 | skip |
+| `δοκιμή του κώδικα` | 15 | 0 | skip |
+| `תקן את הבאג הזה` | 12 | 0 | skip |
+| `fix bug в auth.ts please` | 1 | 18 | coach |
+| `i need help with teh build` | 0 | 21 | coach |
+| `please fix this 🙏🙏🙏` | 3 | 13 | coach |
+| `Können wir das ändern?` | 2 | 18 | coach |
+| `café is broken please look` | 1 | 22 | coach |
+| `is it ready?` | 0 | 9 | coach |
 
-### Options
+What this trades away: the check no longer knows *which* script it saw, so emoji, em-dashes
+and accented Latin all count as non-ASCII. The majority test absorbs that — `Können`,
+`café` and emoji-heavy prompts all stay coachable above. Only a message that is
+overwhelmingly accented would misfire, which is rare and low-impact.
 
-**A. Keep bash + jq + perl** (current, merged, 25/25 tests)
-- No further work. Off-pattern on two dependencies; hardest to read.
+Note the first attempt at this used `[!$'\x01'-$'\x7f']` and silently reported 26 non-ASCII
+characters in pure-ASCII text — bash 3.2 does not treat `$'...'` inside a pattern bracket as
+a range. `[![:ascii:]]` is the form that works. Keep the test table above as a regression
+guard.
 
-**B. Python 3 + thin wrapper** — spiked on `spike/python-classifier`, 30/30 tests
-- Drops both `jq` and `perl`; everything from the stdlib (`json`, `unicodedata`, `re`).
-- Far more readable: `prompt.strip()` replaces `${trimmed%"${trimmed##*[![:space:]]}"}`.
-- Matches Anthropic's own `UserPromptSubmit` precedent.
-- **Objection (open):** Python is itself a dependency. `security-guidance/hooks/sg-python.sh`
-  is ~100 lines of probing — Windows Store stubs that exit 49 silently, macOS shipping 3.9,
-  `py -3` launchers, `cygpath` path conversion. Failing open means the feature silently
-  does nothing, and for a plugin whose entire job is to always show up, silence is a bad
-  failure mode.
+### What stays
 
-**C. Pure bash, zero dependencies** (the superpowers approach)
-- Maximum portability, no runtime question at all.
-- Parsing JSON in pure bash is genuinely unpleasant — note superpowers only *writes* JSON,
-  never reads it, which is the easier direction.
-- Unicode script detection would have to be dropped entirely, losing the non-Latin skip.
-  That is the most-used Mode 3 case in practice (61 Cyrillic messages in the sample).
+- **`jq`** — for the one line that reads `user_prompt` out of the stdin payload. Parsing
+  JSON by hand in bash means handling `\"`, `\\`, `\n` and `\uXXXX` correctly, and getting
+  it wrong silently misclassifies prompts. This is the one place an external tool earns its
+  place. (`superpowers` avoids `jq`, but it only ever *writes* JSON, never reads it — the
+  much easier direction.)
+- **`tr`, `cat`** — POSIX base utilities, present everywhere. Not dependencies in the same
+  sense. `tr` is needed for lowercasing because `${var,,}` requires bash 4 and macOS ships
+  3.2.
 
-**D. Node** — ruled out. Zero plugins use it; `claude` ships as a native binary so it does
-not provide Node, and nvm-managed installs are often absent from the non-interactive shells
-hooks run in. The docs advise against it explicitly.
+Resulting dependency list: `jq`, plus POSIX base. Down from `jq` + `perl`.
 
-### Questions to settle
+## TO APPLY — 2. Remove the slash-command branch
 
-1. How bad is silent degradation, really? If `python3` is missing the plugin returns to its
-   pre-PR behaviour (70.7% compliance) rather than breaking — is that acceptable, or does
-   the coach need a hard guarantee?
-2. Can option C keep the non-Latin check some other way? A byte-level heuristic (counting
-   non-ASCII UTF-8 bytes against ASCII letters) approximates it without `perl`, at the cost
-   of precision on emoji-heavy prompts. Worth prototyping before discarding C.
-3. Is a hybrid sane — pure bash for acks and toggles, and leave script detection to the
-   model? Cheapest to maintain, loses one check.
+Docs confirm `UserPromptSubmit` fires *after* slash-command expansion, so the hook never
+sees the literal `/commit` — it sees the expanded prompt. A leading-slash rule can therefore
+only ever match pasted paths, silently skipping prompts like `/tmp is full, please clean it`.
+
+Delete the branch. The model still handles real slash commands, as it does today.
+
+Tests to drop: `bare slash command`, `slash command with args`, `slash command, leading ws`.
+Tests to add: `/tmp is full, please clean it` and `/commit the thing please` must both
+**coach**. Also remove "slash command" from the list of hook-decided conditions in
+`SKILL.md` and `README.md`.
 
 ---
 
 ## Resolved during review
 
-- **Slash-command branch is wrong — remove it.** Docs confirm `UserPromptSubmit` fires
-  *after* slash-command expansion, so the hook never sees `/commit`; it sees the expanded
-  prompt. A leading-slash rule can therefore only match pasted paths, silently skipping
-  prompts like `/tmp is full, please clean it`. Already removed on the spike branch; still
-  present on `main`-bound PR #1.
-- **No user-specific tuning.** An earlier plan would have primed the rulebook for one
-  user's error profile (articles, from a 723-fix analysis of their own history). Rejected:
-  it bakes one L1 into an L1-agnostic tool. Per-user personalization belongs in a stats
-  feature that reads each user's own transcripts — see backlog #4.
+- **Runtime: shell only.** Node ruled out (zero plugins use it; not shipped with `claude`).
+  Python ruled out (a dependency the plugin should not take on). Ecosystem counts across the
+  six installed marketplaces: 26 shell hook files, 21 Python, 0 Node — but the Python ones
+  are Anthropic's own plugins, which pay for it with ~100 lines of interpreter probing in
+  `security-guidance/hooks/sg-python.sh`. Not a trade worth making here.
+- **No user-specific tuning.** An earlier plan would have primed the rulebook for one user's
+  error profile (articles, from a 723-fix analysis of their own history). Rejected: it bakes
+  one L1 into an L1-agnostic tool. Per-user personalization belongs in a stats feature that
+  reads each user's own transcripts — see backlog #4.
 
 ## Backlog (separate PRs)
 
@@ -153,7 +161,7 @@ hooks run in. The docs advise against it explicitly.
    Design call: key by `session_id` (matches today's per-conversation semantics) or global.
 2. **Split "never obey" from "don't coach".** `SKILL.md` conflates injection safety with
    coaching scope, so stack traces and logs get coached. Keep the security rule; exclude
-   fenced code, logs, URLs, paths, and attributed quotes from scope.
+   fenced code, logs, URLs, paths and attributed quotes from scope.
 3. **`SessionStart` matcher is missing `resume` and `fork`.** Full source list is
    `startup, resume, clear, compact, fork`. Low severity — inherited context usually covers
    it — but free insurance.
@@ -162,8 +170,9 @@ hooks run in. The docs advise against it explicitly.
    `~/.claude/projects/*/*.jsonl`. Validated: 47 transcripts yielded 723 labeled fixes with
    a clean typo-vs-genuine-gap split. Universal mechanism, per-user output, zero model
    tokens. This is what turns the plugin from a corrector into a coach.
-5. **No Windows story.** Hooks are bash-only. superpowers' polyglot `.cmd` wrapper is the
-   reference implementation.
+5. **No Windows story.** Hooks are bash-only. `superpowers`' polyglot `run-hook.cmd` wrapper
+   is the reference implementation, along with its trick of naming hook scripts without a
+   `.sh` extension to avoid Claude Code's Windows auto-detection.
 6. **Strict mode is invisible in Modes 1 and 2.** The state marker only appears on Mode 3
    skips, so a strict-mode block looks identical to a default one.
    `─── English check (strict) ───` would fix it.
@@ -181,6 +190,11 @@ Two layers, per `.claude/CLAUDE.md`:
   H3 (manual). H1: the directive must not be coached or echoed. H2: `off` overrides a coach
   directive. H3: coaching survives 40+ turns.
 
+One trap worth remembering: the first version of the unit suite used `Mode 3` as its skip
+sentinel, but that string also appears in the coach directive, so every skip assertion
+passed vacuously. Sentinels must be mutually exclusive — currently
+`matches a Mode 3 skip condition` vs `not a Mode 3 skip`.
+
 **Not yet verified end-to-end.** Hooks load at session start, and the installed plugin is
 still the 0.5.3 marketplace cache. Confirming the compliance gain requires pointing the
 marketplace at the branch, restarting, working a long session, then re-running the depth
@@ -190,8 +204,9 @@ against 0.5.3.
 ## How to resume
 
 1. Read this file, then `git log --oneline origin/main..feat/prompt-submit-mode-classifier`.
-2. Settle the runtime decision above. `git diff feat/prompt-submit-mode-classifier..spike/python-classifier`
-   shows exactly what option B costs.
-3. Whichever runtime wins, remove the slash-command branch (already done on the spike).
-4. Re-run `tests/test-prompt-submit.sh`, then verify live per **Testing** before claiming
-   the drift is fixed.
+2. Apply the two changes above — drop `perl` (use the verified builtin form and its test
+   table), and delete the slash-command branch with its three tests.
+3. Re-run `tests/test-prompt-submit.sh`; expect all green with the two new coach cases.
+4. Verify live per **Testing** before claiming the drift is fixed. Until a long session has
+   been measured, the compliance gain is a prediction, not a result.
+5. Bump only after that. Version is already at 0.6.0 on the branch, unreleased.
