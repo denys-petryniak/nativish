@@ -151,7 +151,7 @@ Tests to add: `/tmp is full, please clean it` and `/commit the thing please` mus
 - **No user-specific tuning.** An earlier plan would have primed the rulebook for one user's
   error profile (articles, from a 723-fix analysis of their own history). Rejected: it bakes
   one L1 into an L1-agnostic tool. Per-user personalization belongs in a stats feature that
-  reads each user's own transcripts — see backlog #4.
+  reads each user's own transcripts — see **Improvements** #9.
 
 ## Runtime guidance — which language for which component
 
@@ -163,7 +163,7 @@ wrong.
 | --- | --- | --- |
 | `SessionStart` injection | bash, no deps | it only `cat`s a file |
 | `UserPromptSubmit` classifier | bash (+`jq` to read stdin) | short string tests; no computation |
-| `/nativish:stats` (backlog #4) | **a skill, not a script** | see below |
+| `/nativish:stats` (Improvements #9) | **a skill, not a script** | see below |
 | anything else | bash first; justify anything else | |
 
 **Hard rules for hooks:**
