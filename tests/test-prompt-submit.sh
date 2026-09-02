@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
-# tests/test-prompt-submit.sh
-#
-# Unit tests for hooks/prompt-submit.sh — the UserPromptSubmit reminder.
+# Unit tests for hooks/prompt-submit.sh.
 #
 # The hook reads nothing and decides nothing, so there is no classification to
-# test and no point varying the payload: every input takes the same code path.
-# What matters is that it runs on every prompt the user submits, so these four
-# cases cover the ways that could go wrong.
+# test and no point varying the payload. These four are the ways it could fail
+# on a prompt the user actually submitted.
 #
-# Usage:  tests/test-prompt-submit.sh
-# Exit:   0 if all cases pass, 1 if any fail, 2 on setup errors.
+# Exit: 0 all pass, 1 any fail, 2 setup error.
 
 set -uo pipefail
 
@@ -37,22 +33,19 @@ check() {
   fi
 }
 
-# Emits the directive and succeeds.
 out=$(printf '%s' "$PAYLOAD" | "$HOOK" 2>&1)
 check 'emits the directive' $? "$out"
 
-# Must not hang or error when there is nothing to read.
+# Must not hang waiting for input.
 out=$("$HOOK" </dev/null 2>&1)
 check 'stdin closed' $? "$out"
 
-# printf is a builtin, so an empty PATH must still work — this is the claim the
-# README makes about having no dependencies. Invoked through an absolute
-# interpreter, so the test exercises the hook body rather than whether `env`
-# can still resolve bash.
+# The README claims no dependencies. Absolute interpreter, so this tests the
+# hook body rather than whether env can still resolve bash.
 out=$(printf '%s' "$PAYLOAD" | PATH='' "$(command -v bash)" "$HOOK" 2>&1)
 check 'no PATH, no dependencies' $? "$out"
 
-# One line only, so it cannot be mistaken for multi-part context.
+# One line, so it cannot be mistaken for multi-part context.
 lines=$(printf '%s' "$PAYLOAD" | "$HOOK" | wc -l | tr -d ' ')
 if [[ $lines -eq 1 ]]; then
   printf 'PASS  %s\n' 'exactly one line of output'

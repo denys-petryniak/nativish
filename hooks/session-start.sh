@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Inject the writing-coach plugin's coaching rules into the conversation.
-# Output goes to stdout, which Claude Code attaches as additional SessionStart context.
+# Claude Code attaches this hook's stdout to the conversation as SessionStart
+# context, which is how the rulebook reaches the model.
 
 cat <<'HEADER'
 === nativish plugin: active ===
