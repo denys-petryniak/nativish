@@ -148,7 +148,7 @@ run_case "M3" \
 
 run_case "M4" \
   'i wnat to fix smth in auth' \
-  'Mode 1 — the corrected line has I and want, with i → I and wnat → want each on its own line below. smth is NOT flagged.'
+  'Mode 1 with i → I and wnat → want each on its own fix line. smth raises NO fix line of its own. If the corrected line renders it as something, that is correct and NOT a flag - that line is a rewrite in correct English.'
 
 run_case "M5" \
   '/tmp is full, please clean it' \

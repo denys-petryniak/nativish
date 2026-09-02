@@ -58,7 +58,7 @@ Output **only** the active-state marker, on its own line, with **no blockquote**
 
 ## What NOT to flag
 
-Chat style, not mistakes. Do not invent fixes for these. In **strict mode** the first four become real fixes.
+Chat style, not mistakes. Do not invent fixes for these — though the corrected line may still render them in full, since it is a rewrite in correct English. In **strict mode** the first four become real fixes.
 
 - **Lowercase first letter** — `is it useful?` *(strict: capitalize)*
 - **Missing terminal period** *(strict: add)*
