@@ -53,10 +53,25 @@ first_line="${trimmed%%$'\n'*}"
 lower_trimmed="$(printf '%s' "$trimmed" | tr '[:upper:]' '[:lower:]')"
 
 # --- Mode 3: slash command ---------------------------------------------------
-# Command tokens are lowercase and unbroken; this deliberately excludes pasted
-# absolute paths such as /Users/dev/app.ts or /etc/hosts.
-if [[ "$first_line" =~ ^/[a-z][a-z0-9:_-]*([[:space:]].*)?$ ]]; then
-  skip 'slash command'
+# UserPromptSubmit fires *before* expansion, so the hook does see the literal
+# `/commit` the user typed. (Expansion has its own event, UserPromptExpansion.)
+#
+# Command tokens are lowercase and unbroken, which already excludes multi-
+# segment paths: `/` is not in the character class, so `/etc/hosts is full` and
+# `/Users/dev/app.ts is broken` fall through to coach.
+#
+# Single-segment top-level paths are the exception, because `/tmp is full` and
+# `/pr-create add the thing` have exactly the same shape — structure alone
+# cannot separate them. Hence the denylist below. Denylists are usually the
+# wrong tool; this one earns its place because the list is finite and fixed by
+# decades of filesystem convention, and a miss costs one uncoached prompt
+# rather than a broken one. `Users`, `Applications`, `Library`, `System` and
+# `Volumes` need no entry — the leading-lowercase rule already excludes them.
+if [[ "$first_line" =~ ^/([a-z][a-z0-9:_-]*)([[:space:]].*)?$ ]]; then
+  case "${BASH_REMATCH[1]}" in
+    tmp | etc | usr | var | opt | bin | sbin | dev | home | lib | mnt | srv | proc | sys | root) ;;
+    *) skip 'slash command' ;;
+  esac
 fi
 
 # --- Mode 3: toggle marker ---------------------------------------------------
