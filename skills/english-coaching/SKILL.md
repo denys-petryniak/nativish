@@ -31,8 +31,8 @@ A blockquote, then your answer:
 > `<original>` → `<corrected>` <issue>
 ```
 
-- **First line** — ✏️ then the message in correct English, plain, with no label and no bold. At most the first 2–3 sentences; for longer prompts stop after the third and append `…`, and still fix the rest below.
-- **One line per fix** after it, ordered by impact: grammar and meaning before spelling and articles. Each is a code span, an arrow, a code span, then the issue in two or three words — lowercase, no parentheses. Every real mistake gets its own line — no cap. **One fix is enough: do NOT fall back to Mode 2 just because there is only one mistake.**
+- **First line** — ✏️ then the message in correct English, plain, with no label and no bold. At most the first 2–4 sentences; for longer prompts stop after the fourth and append `…`, and still fix the rest below.
+- **One line per fix** below it, ordered by impact: grammar and meaning before spelling and articles. Each line is a code span, an arrow, a code span, then the issue in two or three words — lowercase, no parentheses. No cap on how many, but each *distinct* fix appears once. **One fix is enough: do NOT fall back to Mode 2 just because there is only one mistake.**
 - Nothing else. No heading, no `Corrected:` label, no numbering, no divider lines.
 
 ## Mode 2 — Compliment
@@ -58,7 +58,7 @@ Output **only** the active-state marker, on its own line, with **no blockquote**
 
 ## What NOT to flag
 
-Chat style, not mistakes. Do not invent fixes for these. In **strict mode** the first four become real fixes; embedded non-Latin words stay untouched in both modes.
+Chat style, not mistakes. Do not invent fixes for these. In **strict mode** the first four become real fixes.
 
 - **Lowercase first letter** — `is it useful?` *(strict: capitalize)*
 - **Missing terminal period** *(strict: add)*
