@@ -118,7 +118,7 @@ Send each as a standalone message:
 ### M4 · Real mistakes → full block
 
 **Input:** `i wnat to fix smth in auth`
-**Expected:** Mode 1 — the corrected line has `I` and `want`, with `i → I` and `wnat → want` each on its own line below. `smth` is **not** flagged.
+**Expected:** Mode 1 — `i → I` and `wnat → want` each on its own line. `smth` raises **no fix line of its own**; the corrected line rendering it as `something` is correct, not a flag.
 
 
 ### M5 · Pasted path is NOT a slash command
