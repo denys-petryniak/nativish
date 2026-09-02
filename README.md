@@ -50,7 +50,7 @@ Two hooks, with different jobs:
 
 **Why the second hook exists.** A rulebook injected once at the top of a conversation loses ground as the conversation grows. Measured across 24 real sessions (577 prompts), coaching appeared on 94% of prompts during turns 1–5 but only 57% past turn 40 — a monotonic decay, on Opus. The per-prompt directive costs about 60 tokens, roughly 0.06% of a session's output.
 
-Dependencies degrade gracefully: without `jq` the hook is a silent no-op, and without `perl` only the script check is skipped, leaving that call to the model as before. The hook never blocks a prompt — on any error it prints nothing and exits 0.
+The hook's only dependency is `jq`, for the one line that reads your prompt off stdin — every check itself is a bash builtin, targeting the bash 3.2 that macOS still ships. Without `jq` the hook is a silent no-op and the mode decision falls back to the model alone. The hook never blocks a prompt — on any error it prints nothing and exits 0.
 
 ## Privacy & security
 

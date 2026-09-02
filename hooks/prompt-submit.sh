@@ -12,6 +12,10 @@
 # it is decided here. The Mode 1 (mistakes) vs Mode 2 (clean) split needs a
 # reader, so it stays with the model.
 #
+# Dependencies: `jq`, for the one line that reads `user_prompt` off stdin.
+# Everything else is a bash builtin, targeting bash 3.2 — the version macOS
+# still ships.
+#
 # Fails open by design — on any missing dependency, malformed payload, or
 # unexpected error, it prints nothing and exits 0. A broken coach must never
 # swallow the user's prompt.
@@ -75,23 +79,23 @@ if [[ "$trimmed" != *$'\n'* ]]; then
 fi
 
 # --- Mode 3: non-Latin script -----------------------------------------------
-# Scripts enumerated to match SKILL.md. Skips only when non-Latin letters
-# outnumber Latin ones, so an English prompt with an embedded foreign word
-# stays coachable. Without perl, this check is skipped and the model decides.
-if command -v perl >/dev/null 2>&1; then
-  counts="$(printf '%s' "$trimmed" | perl -CS -e '
-    my $t = do { local $/; <STDIN> };
-    my $other = () = $t =~ /[\p{Cyrillic}\p{Han}\p{Hiragana}\p{Katakana}\p{Hangul}\p{Arabic}\p{Hebrew}\p{Greek}\p{Devanagari}\p{Thai}]/g;
-    my $latin = () = $t =~ /\p{Latin}/g;
-    print "$other $latin";
-  ' 2>/dev/null)" || counts=''
-  if [[ "$counts" =~ ^([0-9]+)\ ([0-9]+)$ ]]; then
-    other="${BASH_REMATCH[1]}"
-    latin="${BASH_REMATCH[2]}"
-    if (( other > latin )); then
-      skip 'non-Latin script'
-    fi
-  fi
+# Bash builtins only: no forks, no external tools. A majority test — skip when
+# non-ASCII characters outnumber Latin letters — so a mostly-English prompt with
+# an embedded foreign word, an accent, or a trailing emoji stays coachable.
+#
+# This does not know *which* script it saw, so `Können`, `café` and emoji all
+# count as non-ASCII. The majority test absorbs that; only a message that is
+# overwhelmingly accented would misfire, which is rare and low-impact.
+#
+# `[![:ascii:]]` is the form that works on bash 3.2. The first attempt used
+# `[!$'\x01'-$'\x7f']` and silently reported 26 non-ASCII characters in
+# pure-ASCII text, because 3.2 does not read $'...' as a range inside a pattern
+# bracket. Correct in either locale: under a UTF-8 one the counts are
+# characters, under C they are bytes, and the verdict is the same.
+latin_only="${trimmed//[!a-zA-Z]/}"
+ascii_only="${trimmed//[![:ascii:]]/}"
+if (( ${#trimmed} - ${#ascii_only} > ${#latin_only} )); then
+  skip 'non-Latin script'
 fi
 
 coach
