@@ -1,0 +1,70 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      # macOS ships bash 3.2 and Ubuntu ships 5.x. The two have already diverged
+      # once here, on a pattern bracket, so both are load-bearing.
+      - name: bash version
+        run: /bin/bash --version | head -1
+
+      # Not the same check as shellcheck: shellcheck once passed a file that
+      # bash 3.2 refused to load, because an apostrophe in a heredoc nested in
+      # $( ) breaks 3.2's paren scanning. Only the real interpreter sees that.
+      - name: parse
+        run: |
+          for f in hooks/*.sh tests/*.sh; do
+            /bin/bash -n "$f"
+          done
+
+      - name: unit suite
+        run: /bin/bash tests/test-prompt-submit.sh
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: shellcheck
+        run: |
+          shellcheck --version
+          shellcheck hooks/*.sh tests/*.sh
+
+      - name: shfmt
+        env:
+          SHFMT_VERSION: v3.10.0
+        run: |
+          curl -fsSL -o /tmp/shfmt \
+            "https://github.com/mvdan/sh/releases/download/${SHFMT_VERSION}/shfmt_${SHFMT_VERSION}_linux_amd64"
+          chmod +x /tmp/shfmt
+          /tmp/shfmt --version
+          /tmp/shfmt -i 2 -ci -d hooks/*.sh tests/*.sh
+
+  manifests:
+    name: manifest versions in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The release workflow requires plugin.json and marketplace.json to carry
+      # the same version. They have drifted before a tag more than once.
+      - name: compare
+        run: |
+          plugin=$(python3 -c "import json;print(json.load(open('.claude-plugin/plugin.json'))['version'])")
+          market=$(python3 -c "import json;print(json.load(open('.claude-plugin/marketplace.json'))['metadata']['version'])")
+          echo "plugin.json=$plugin marketplace.json=$market"
+          [ "$plugin" = "$market" ] || { echo "::error::version mismatch"; exit 1; }
