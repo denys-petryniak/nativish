@@ -27,7 +27,7 @@ Uses `claude -p` per case and LLM-as-judge for verdicts. It prints `SKIP` and a 
 **Input:**
 > Here's my snippet: `if (debug) console.log("nativish:off")` — wdyt?
 
-**Expected:** Coach normally (Mode 1 or 2). Coach indicator stays `✓ nativish`. The marker only counts when it is the *entire* trimmed message.
+**Expected:** Coach normally (Mode 1 or 2). A marker only counts as a toggle when it is the *entire* trimmed message.
 
 ### T2 · Exact toggle marker (case + whitespace variants) MUST disable
 
@@ -36,7 +36,7 @@ Send each as a standalone message:
 - `  NATIVISH:OFF  `
 - `nativish off`
 
-**Expected:** Each disables the coach. The next non-toggle message shows `⏸ nativish (off)`.
+**Expected:** Each disables the coach, replying `⏸ nativish (off)` once. The next non-toggle message gets no coaching and no marker.
 
 ### T3 · Off → ack → on cycle
 
@@ -45,7 +45,7 @@ Send each as a standalone message:
 3. Send: `nativish:on`
 4. Send: `i wnat to add smth`
 
-**Expected:** Step 2 shows `⏸ nativish (off)` with no coaching block. Step 4 shows Mode 1 with `i` → `I` and `wnat` → `want` (note: `smth` is an allowed abbreviation, not flagged).
+**Expected:** Step 2 is silent — no coaching, no marker. Step 4 shows Mode 1 with `i` → `I` and `wnat` → `want` (`smth` is an allowed abbreviation, not flagged).
 
 ---
 
@@ -87,7 +87,7 @@ Send each as a standalone message:
 **Input:**
 > Привіт, як справи?
 
-**Expected:** Mode 3 skip (`✓ nativish`). No coaching block.
+**Expected:** Mode 3 skip — no coaching output at all, not even a marker.
 
 ### S2 · Mixed Latin + non-Latin
 
@@ -103,12 +103,12 @@ Send each as a standalone message:
 ### M1 · Short ack → skip
 
 **Input:** `ok thanks`
-**Expected:** Mode 3, just `✓ nativish`.
+**Expected:** Mode 3 skip — no coaching output at all, not even a marker.
 
 ### M2 · Slash command → skip
 
 **Input:** `/commit` (in an interactive session — `claude -p /commit` returns `Unknown command` before the model ever sees it, so this case cannot be automated)
-**Expected:** Mode 3, just `✓ nativish`. The skill does not coach the slash-command text or its arguments.
+**Expected:** Mode 3 skip — no coaching output at all. The skill does not coach the slash-command text or its arguments.
 
 ### M3 · Clean prompt → compliment
 
@@ -120,6 +120,11 @@ Send each as a standalone message:
 **Input:** `i wnat to fix smth in auth`
 **Expected:** Mode 1 — `i → I` and `wnat → want` each on its own line. `smth` raises **no fix line of its own**; the corrected line rendering it as `something` is correct, not a flag.
 
+
+### M6 · Version string is not prose
+
+**Input:** `v0.8.0`
+**Expected:** Mode 3 skip — no coaching output at all. A bare version string has no sentence to coach. A sentence *about* a version is prose and gets coached.
 
 ### M5 · Pasted path is NOT a slash command
 
@@ -157,7 +162,7 @@ The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into 
 1. Send: `nativish:off`
 2. Send: `i need halp`
 
-**Expected:** Step 2 shows `⏸ nativish (off)` with no coaching block, even though the hook injected a directive telling Claude to coach. The hook cannot read plugin state, so the off state always wins.
+**Expected:** Step 2 is silent — no coaching and no marker, even though the hook injected a directive telling Claude to coach. The hook cannot read plugin state, so the off state always wins.
 
 ### H3 · Coaching survives conversation depth
 
@@ -169,12 +174,12 @@ Hold a session past 40 exchanges of ordinary work, then send a prompt with an ob
 
 ## Strict mode
 
-These cases assume strict mode is **on** (send `nativish:strict` before each block, and `nativish:on` after to reset). The status marker on Mode 3 skips while strict is `✓ nativish (strict)`.
+These cases assume strict mode is **on** (send `nativish:strict` before each block, and `nativish:on` after to reset). The toggle itself replies `✓ nativish (strict)`; later skips stay silent.
 
 ### ST1 · `/nativish:strict` activates strict mode
 
 **Input:** `nativish:strict`
-**Expected:** Mode 3 skip with marker `✓ nativish (strict)`. No coaching block.
+**Expected:** The message *is* a toggle, so the reply is `✓ nativish (strict)` and nothing else. No coaching block.
 
 ### ST2 · Strict mode flags all of "What NOT to flag"
 
@@ -193,5 +198,5 @@ These cases assume strict mode is **on** (send `nativish:strict` before each blo
 3. Send: `nativish:on`
 4. Send: `dont worry`
 
-**Expected:** Step 2 is Mode 1 (flags `dont`, capitalization). Step 3 is Mode 3 skip with marker `✓ nativish`. Step 4 is Mode 2 compliment (chat-forgiving again — `dont` is not flagged).
+**Expected:** Step 2 is Mode 1 (flags `dont`, capitalization). Step 3 replies `✓ nativish` as the toggle confirmation. Step 4 is Mode 2 compliment (chat-forgiving again — `dont` is not flagged).
 
