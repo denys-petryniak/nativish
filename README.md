@@ -39,9 +39,9 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 
 ## Known limitations
 
-- **Short commands** — `dont forget to commit` sometimes gets no check. Longer prose is reliable.
+- **Command-shaped prompts** — `dont forget to commit` often gets no check. The trigger is imperative form, not length.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
-- **Toggles reset on `/clear`** — nothing is stored on disk, so just say `/nativish:off` again.
+- **Toggles reset on `/clear`** — say `/nativish:off` again.
 - **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.
 
 ---
