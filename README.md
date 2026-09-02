@@ -1,6 +1,6 @@
 # Nativish
 
-[![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest) [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE) [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin) [![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
+[![CI](https://github.com/denys-petryniak/nativish/actions/workflows/ci.yml/badge.svg)](https://github.com/denys-petryniak/nativish/actions/workflows/ci.yml) [![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest) [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE) [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin) [![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
 
 Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
 
@@ -52,9 +52,10 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 
 ## Known limitations
 
-- **Pasted code and logs get coached too.** Expect the odd false flag on snippets you didn't write.
-- **Toggles reset on `/clear`.** Nothing is stored on disk — just say `/nativish:off` again.
-- **Long prompts** echo only the first 2–3 corrected sentences; fixes for the rest still appear in the list.
+- **Short commands** — `dont forget to commit` sometimes gets no check. Longer prose is reliable.
+- **Pasted code and logs** get coached too, so expect the odd false flag.
+- **Toggles reset on `/clear`** — nothing is stored on disk, so just say `/nativish:off` again.
+- **Long prompts** echo only the first 2–3 corrected sentences; the rest of the fixes still appear.
 
 ---
 
