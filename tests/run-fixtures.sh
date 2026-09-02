@@ -126,7 +126,7 @@ can you review this?' \
 
 run_case "L1" \
   'i wnat to fix smth in auth. their is a issue wit the login flow. some user reports that they cant signin. mabe is somthing wrong with the token. its probly the refresh token logic. we should chek the code carefuly. their is also a problem with the logout. somtimes it doesnt clear the session corectly.' \
-  'Mode 1. The Corrected: field shows the first 2–3 corrected sentences followed by an ellipsis (…). The numbered fixes list shows up to 5 items drawn from the whole input.'
+  'Mode 1. The corrected line shows the first 2–3 corrected sentences followed by an ellipsis (…). Fixes follow one per line, drawn from the whole input, including the sentences the corrected line stopped short of.'
 
 run_case "S1" \
   'Привіт, як справи?' \
@@ -148,7 +148,7 @@ run_case "M3" \
 
 run_case "M4" \
   'i wnat to fix smth in auth' \
-  'Mode 1 — Corrected: with I and want, numbered list including at least i → I and wnat → want. smth is NOT flagged.'
+  'Mode 1 — the corrected line has I and want, with i → I and wnat → want each on its own line below. smth is NOT flagged.'
 
 run_case "M5" \
   '/tmp is full, please clean it' \
@@ -164,7 +164,7 @@ run_case "N2" \
 
 run_case "H1" \
   'i need halp with teh tests' \
-  'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in Corrected: and must not generate any numbered fix of its own.'
+  'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in the corrected line and must not generate any fix of its own.'
 
 skip_case "H2" "Multi-step (off → message, directive must not override off) — run manually"
 skip_case "H3" "Requires a 40+ turn session to test depth compliance — run manually"
