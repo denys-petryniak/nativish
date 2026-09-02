@@ -126,7 +126,7 @@ can you review this?' \
 
 run_case "L1" \
   'i wnat to fix smth in auth. their is a issue wit the login flow. some user reports that they cant signin. mabe is somthing wrong with the token. its probly the refresh token logic. we should chek the code carefuly. their is also a problem with the logout. somtimes it doesnt clear the session corectly.' \
-  'Mode 1. The corrected line shows the first 2–3 corrected sentences followed by an ellipsis (…). Fixes follow one per line, drawn from the whole input, including the sentences the corrected line stopped short of.'
+  'Mode 1. The corrected line shows the first 2–4 corrected sentences followed by an ellipsis (…). Fixes follow one per line, drawn from the whole input, including the sentences the corrected line stopped short of.'
 
 run_case "S1" \
   'Привіт, як справи?' \

@@ -72,11 +72,11 @@ Send each as a standalone message:
 
 ## Output length cap
 
-### L1 · Long messy paste truncates the corrected line at 3 sentences
+### L1 · Long messy paste truncates the corrected line at 4 sentences
 
 **Input:** Paste 8+ sentences, each containing at least one mistake (missing articles, wrong verb form, lowercase pronouns, etc.).
 
-**Expected:** The corrected line shows the first 2–3 corrected sentences followed by `…`. Fixes follow one per line, drawn from the whole input — including mistakes in the sentences the corrected line stopped short of.
+**Expected:** The corrected line shows the first 2–4 corrected sentences followed by `…`. Fixes follow one per line, drawn from the whole input — including mistakes in the sentences the corrected line stopped short of.
 
 ---
 
