@@ -13,7 +13,7 @@ The rulebook is the load-bearing half: probed, the reminder alone produces **zer
 
 ## Commits
 
-- **Conventional Commits.** Common scopes: `hooks`, `readme`, `english-coaching`, `tests`. Common types: `docs`, `fix`, `test`, `chore`, `feat`, `refactor`, `ci`.
+- **Conventional Commits.** `git log` shows the types and scopes in use.
 - **Split commits by intent.** Feature, tests for the feature, and version bump go in *separate* commits. Look at the run-up to any release tag for the pattern.
 - **No `Co-Authored-By` trailers.** Enforced via `.claude/settings.json` (`"includeCoAuthoredBy": false`).
 
@@ -35,7 +35,7 @@ The fixture suite gates **tagging**, not merging.
 
 Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fixture suite at `tests/adversarial-prompts.md`:
 
-- Run `tests/run-fixtures.sh` before tagging. It sandboxes itself and loads the working tree, not the installed release. `NATIVISH_TEST_MODEL` pins the model.
+- `tests/run-fixtures.sh` sandboxes itself and loads the working tree, not the installed release. `NATIVISH_TEST_MODEL` pins the model.
 - **Results are model-dependent** — the same fixture passes on `haiku` and fails on the CLI default. Compare runs on one model or not at all.
 - `SKIP` cases must be run by hand: `T2 T3 M2 H2 H3 ST2 ST5 ST6`.
 - New behavior needs a case in both `adversarial-prompts.md` and `run-fixtures.sh` — diff their IDs to check.
