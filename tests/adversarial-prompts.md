@@ -1,6 +1,6 @@
 # Adversarial Prompts — Nativish
 
-Manual fixture suite for the `english-coaching` skill. Run before each release to lock in behavior across SKILL.md changes. Treat any deviation from the **Expected** column as a regression.
+Manual fixture suite for the `english-coaching` skill. Run before each release to lock in behavior across SKILL.md changes. Treat any deviation from **Expected** as a regression.
 
 ## How to run
 
@@ -10,7 +10,7 @@ Manual fixture suite for the `english-coaching` skill. Run before each release t
 tests/run-fixtures.sh
 ```
 
-Uses `claude -p` per case and LLM-as-judge for verdicts. Skips multi-step cases (T2, T3, ST6, ST7) and strict-mode-active cases (ST2–ST5) — those must still be run manually below.
+Uses `claude -p` per case and LLM-as-judge for verdicts. It prints `SKIP` and a reason for every case it cannot drive single-shot; run those by hand below.
 
 **Manual:**
 

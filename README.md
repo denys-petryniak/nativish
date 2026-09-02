@@ -4,8 +4,8 @@
 
 Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
 
-> ✏️ I need help with the build.
-> `i` → `I` lowercase pronoun
+> ✏️ I need help with the build.<br>
+> `i` → `I` lowercase pronoun<br>
 > `teh` → `the` typo
 
 Sure — what's failing? Paste the error output and I'll take a look.
