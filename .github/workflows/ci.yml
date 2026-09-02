@@ -1,6 +1,11 @@
 name: CI
 
-on: [push, pull_request]
+# push is limited to main: with `on: [push, pull_request]` every job runs twice
+# on a branch that has a PR open, once per event.
+on:
+  push:
+    branches: [main]
+  pull_request:
 
 permissions:
   contents: read
