@@ -26,7 +26,9 @@ payload="$(cat 2>/dev/null)" || exit 0
 [[ -n "$payload" ]] || exit 0
 
 command -v jq >/dev/null 2>&1 || exit 0
-prompt="$(printf '%s' "$payload" | jq -r '.user_prompt // empty' 2>/dev/null)" || exit 0
+# The field is `prompt`. An earlier version read `.user_prompt`, which does not
+# exist, so the hook exited 0 with no output on every prompt ever submitted.
+prompt="$(printf '%s' "$payload" | jq -r '.prompt // empty' 2>/dev/null)" || exit 0
 
 # Trim leading and trailing whitespace.
 trimmed="${prompt#"${prompt%%[![:space:]]*}"}"
