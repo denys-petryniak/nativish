@@ -21,7 +21,6 @@ fi
 pass=0
 fail=0
 
-# check <label> <exit-status> <output>
 check() {
   local label=$1 status=$2 out=$3
   if [[ $status -eq 0 && $out == *"$DIRECTIVE"* ]]; then
