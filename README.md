@@ -1,15 +1,31 @@
 # Nativish
 
-[![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest)
-[![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE)
-[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin)
-[![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
+[![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest) [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE) [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin) [![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
 
-A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) — corrects your English before every response. Built for non-native speakers who code with Claude.
+Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
 
-![Nativish demo](assets/nativish-demo.png)
+```
+─── English check ───
 
-*Every message you send gets coached, inline, before the answer.*
+Corrected: "I need help with the build."
+
+1. "i" → "I" — lowercase pronoun
+2. "teh" → "the" — letters transposed
+
+──────────────────────
+
+Sure — what's failing? Paste the error output and I'll take a look.
+```
+
+Clean prompt? You get a one-liner instead:
+
+```
+─── English check ───
+
+💪 Sharp grammar — you're leveling up.
+
+──────────────────────
+```
 
 ## Install
 
@@ -18,54 +34,32 @@ A writing coach plugin for [Claude Code](https://www.anthropic.com/claude-code) 
 /plugin install nativish@nativish
 ```
 
-Restart your Claude Code session for the `SessionStart` hook to take effect.
+Restart your session so the hooks load.
 
-## What it does
+## Toggle
 
-Before every response, Claude inspects your prompt:
+| Command | Effect |
+| --- | --- |
+| `/nativish:off` | stop coaching |
+| `/nativish:on` | back to normal — forgiving about chat style (`dont`, `pls`, lowercase starts) |
+| `/nativish:strict` | flag chat style too |
 
-- Real grammar, spelling, or word-choice mistakes → a corrected version plus a numbered list of fixes
-- Clean prompt → a one-line compliment
-- Slash command, short ack (`yes`, `ok`, `thanks`), or message in a non-Latin script → silent
+Type `nativish off` / `on` / `strict` as a whole message if you'd rather not autocomplete. Slash commands, short acks (`ok`, `thanks`) and non-Latin messages are skipped silently.
 
-Toggle:
+## Privacy
 
-- `/nativish:off` — disable for the conversation
-- `/nativish:on` — switch to default mode (chat-forgiving)
-- `/nativish:strict` — switch to strict mode (also flags missing apostrophes, lowercase first letter, missing terminal periods, and common abbreviations)
-- Inline aliases: `nativish:off` / `nativish:on` / `nativish:strict` (or with a space: `nativish off`, etc.) — handy if you'd rather type than autocomplete. The marker must be the entire message, so pasting a doc that mentions one of them won't accidentally switch states.
-
-Status markers tell you which state the coach is in at a glance:
-
-- `✓ en-coach` — default mode (active, chat-forgiving)
-- `✓ en-coach (strict)` — strict mode (active, flags chat-style typos too)
-- `⏸ en-coach (off)` — disabled
-
-## How it works
-
-A `SessionStart` hook injects the English-coaching skill into the conversation's system context, so the rule applies on every user message — no manual skill invocation needed.
-
-## Privacy & security
-
-Nativish is a self-contained Markdown + shell plugin:
-
-- **No network calls** beyond the standard Anthropic API that Claude Code itself uses.
-- **No telemetry**, no analytics, no external services.
-- **No system file modifications** — the plugin only injects text into the conversation context via the `SessionStart` hook.
-- **No elevated permissions required** — does not request bypass-permissions mode or any permission overrides.
-
-The full installation is a few Markdown files and one shell script that `cat`s them. Inspect everything in [`hooks/`](hooks/) and [`skills/english-coaching/`](skills/english-coaching/).
+Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/) and [`skills/english-coaching/`](skills/english-coaching/).
 
 ## Known limitations
 
-- **Model variance.** The skill's output format (Modes 1/2/3) is enforced via prose rules, so compliance varies by model. Opus follows the rules reliably; Sonnet (the default for many setups) occasionally drifts — wrapping a Mode 3 marker in dividers, or skipping the coaching block on a long input. The adversarial fixture suite at `tests/adversarial-prompts.md` catches drift; expect a high-but-not-perfect pass rate on Sonnet.
-- **Pasted content gets coached too.** Code, logs, error messages, quoted prose — all of it is treated as text to check. Expect occasional false flags on snippets you didn't write.
-- **Long prompts are truncated in `Corrected:`.** Only the first 2–3 sentences are echoed back; fixes for later sentences still appear in the numbered list below.
-
-## Why "Nativish"?
-
-A coined word — *almost native*. The plugin won't turn you into a native speaker, but it nudges your written English a little closer every conversation.
+- **Pasted code and logs get coached too.** Expect the odd false flag on snippets you didn't write.
+- **Toggles reset on `/clear`.** Nothing is stored on disk — just say `/nativish:off` again.
+- **Long prompts** echo only the first 2–3 corrected sentences; fixes for the rest still appear in the list.
 
 ---
 
-*Made with Claude, for Claude.* 🧡
+*Nativish* — a coined word, *almost native*. It won't make you a native speaker, but it nudges your written English a little closer every conversation.
+
+---
+
+<p align="center"><em>Made with Claude, for Claude.</em> 🧡</p>
