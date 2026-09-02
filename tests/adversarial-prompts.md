@@ -113,7 +113,7 @@ Send each as a standalone message:
 ### M3 · Clean prompt → compliment
 
 **Input:** `How does the SessionStart hook work?`
-**Expected:** Mode 2 — divider + one-line compliment with an emoji, no fixes list.
+**Expected:** Mode 2 — a blockquote holding one compliment line with an emoji, and no fixes.
 
 ### M4 · Real mistakes → full block
 

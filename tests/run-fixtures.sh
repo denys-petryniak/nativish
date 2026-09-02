@@ -56,7 +56,7 @@ judge() {
     cat <<PROMPT
 You are evaluating an LLM test fixture for a writing-coach plugin.
 
-Judge ONLY the English-coaching output: the divider-wrapped block, or the bare status marker on its own line. The reply will normally go on to answer the request as well — that is correct and expected, and must NOT affect your verdict unless the EXPECTED BEHAVIOR below says something about it. Do not fail a response for answering the prompt, asking a clarifying question, or reviewing pasted code.
+Judge ONLY the English-coaching output: the leading blockquote, or the bare status marker on its own line. The reply will normally go on to answer the request as well — that is correct and expected, and must NOT affect your verdict unless the EXPECTED BEHAVIOR below says something about it. Do not fail a response for answering the prompt, asking a clarifying question, or reviewing pasted code.
 
 Reply with EXACTLY ONE LINE, starting with "PASS:" or "FAIL:" and a one-sentence reason. Output nothing else — no preamble, no English-coaching block, no explanation block.
 
@@ -130,7 +130,7 @@ run_case "L1" \
 
 run_case "S1" \
   'Привіт, як справи?' \
-  'Mode 3 skip (just ✓ en-coach). No coaching block — no dividers, no Corrected, no numbered fixes.'
+  'Mode 3 skip (just ✓ en-coach). No coaching block — no blockquote, no corrected sentence, no fixes.'
 
 run_case "S2" \
   'fix bug в auth.ts' \
@@ -144,7 +144,7 @@ skip_case "M2" "claude -p rejects a bare slash command as Unknown command — ru
 
 run_case "M3" \
   'How does the SessionStart hook work?' \
-  'Mode 2 — divider block with a one-line compliment with an emoji, and NO numbered fixes list.'
+  'Mode 2 — a blockquote holding one compliment line with an emoji, and NO list of fixes.'
 
 run_case "M4" \
   'i wnat to fix smth in auth' \
