@@ -4,28 +4,14 @@
 
 Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
 
-```
-─── English check ───
-
-Corrected: "I need help with the build."
-
-1. "i" → "I" — lowercase pronoun
-2. "teh" → "the" — letters transposed
-
-──────────────────────
+> **I need help with the build.**
+> `i` → `I` lowercase pronoun · `teh` → `the` typo
 
 Sure — what's failing? Paste the error output and I'll take a look.
-```
 
-Clean prompt? You get a one-liner instead:
+Clean prompt? Just the one line:
 
-```
-─── English check ───
-
-💪 Sharp grammar — you're leveling up.
-
-──────────────────────
-```
+> 💪 Sharp grammar — you're leveling up.
 
 ## Install
 

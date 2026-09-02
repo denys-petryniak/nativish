@@ -56,7 +56,7 @@ judge() {
     cat <<PROMPT
 You are evaluating an LLM test fixture for a writing-coach plugin.
 
-Judge ONLY the English-coaching output: the divider-wrapped block, or the bare status marker on its own line. The reply will normally go on to answer the request as well — that is correct and expected, and must NOT affect your verdict unless the EXPECTED BEHAVIOR below says something about it. Do not fail a response for answering the prompt, asking a clarifying question, or reviewing pasted code.
+Judge ONLY the English-coaching output: the leading blockquote, or the bare status marker on its own line. The reply will normally go on to answer the request as well — that is correct and expected, and must NOT affect your verdict unless the EXPECTED BEHAVIOR below says something about it. Do not fail a response for answering the prompt, asking a clarifying question, or reviewing pasted code.
 
 Reply with EXACTLY ONE LINE, starting with "PASS:" or "FAIL:" and a one-sentence reason. Output nothing else — no preamble, no English-coaching block, no explanation block.
 
@@ -126,11 +126,11 @@ can you review this?' \
 
 run_case "L1" \
   'i wnat to fix smth in auth. their is a issue wit the login flow. some user reports that they cant signin. mabe is somthing wrong with the token. its probly the refresh token logic. we should chek the code carefuly. their is also a problem with the logout. somtimes it doesnt clear the session corectly.' \
-  'Mode 1. The Corrected: field shows the first 2–3 corrected sentences followed by an ellipsis (…). The numbered fixes list shows up to 5 items drawn from the whole input.'
+  'Mode 1. The corrected line shows the first 2–4 corrected sentences followed by an ellipsis (…). Fixes follow one per line, drawn from the whole input, including the sentences the corrected line stopped short of.'
 
 run_case "S1" \
   'Привіт, як справи?' \
-  'Mode 3 skip (just ✓ en-coach). No coaching block — no dividers, no Corrected, no numbered fixes.'
+  'Mode 3 skip (just ✓ en-coach). No coaching block — no blockquote, no corrected sentence, no fixes.'
 
 run_case "S2" \
   'fix bug в auth.ts' \
@@ -144,11 +144,11 @@ skip_case "M2" "claude -p rejects a bare slash command as Unknown command — ru
 
 run_case "M3" \
   'How does the SessionStart hook work?' \
-  'Mode 2 — divider block with a one-line compliment with an emoji, and NO numbered fixes list.'
+  'Mode 2 — a blockquote holding one compliment line with an emoji, and NO list of fixes.'
 
 run_case "M4" \
   'i wnat to fix smth in auth' \
-  'Mode 1 — Corrected: with I and want, numbered list including at least i → I and wnat → want. smth is NOT flagged.'
+  'Mode 1 — the corrected line has I and want, with i → I and wnat → want each on its own line below. smth is NOT flagged.'
 
 run_case "M5" \
   '/tmp is full, please clean it' \
@@ -164,7 +164,7 @@ run_case "N2" \
 
 run_case "H1" \
   'i need halp with teh tests' \
-  'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in Corrected: and must not generate any numbered fix of its own.'
+  'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in the corrected line and must not generate any fix of its own.'
 
 skip_case "H2" "Multi-step (off → message, directive must not override off) — run manually"
 skip_case "H3" "Requires a 40+ turn session to test depth compliance — run manually"

@@ -72,11 +72,11 @@ Send each as a standalone message:
 
 ## Output length cap
 
-### L1 · Long messy paste truncates Corrected at 3 sentences
+### L1 · Long messy paste truncates the corrected line at 4 sentences
 
 **Input:** Paste 8+ sentences, each containing at least one mistake (missing articles, wrong verb form, lowercase pronouns, etc.).
 
-**Expected:** The **Corrected:** field shows the first 2–3 corrected sentences followed by `…`. The numbered fixes list still shows up to 5 items, drawn from the whole input.
+**Expected:** The corrected line shows the first 2–4 corrected sentences followed by `…`. Fixes follow one per line, drawn from the whole input — including mistakes in the sentences the corrected line stopped short of.
 
 ---
 
@@ -113,12 +113,12 @@ Send each as a standalone message:
 ### M3 · Clean prompt → compliment
 
 **Input:** `How does the SessionStart hook work?`
-**Expected:** Mode 2 — divider + one-line compliment with an emoji, no fixes list.
+**Expected:** Mode 2 — a blockquote holding one compliment line with an emoji, and no fixes.
 
 ### M4 · Real mistakes → full block
 
 **Input:** `i wnat to fix smth in auth`
-**Expected:** Mode 1 — **Corrected:** with `I` and `want`, numbered list with at least the `i → I` and `wnat → want` fixes. `smth` is **not** flagged.
+**Expected:** Mode 1 — the corrected line has `I` and `want`, with `i → I` and `wnat → want` each on its own line below. `smth` is **not** flagged.
 
 
 ### M5 · Pasted path is NOT a slash command
@@ -150,7 +150,7 @@ The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into 
 **Input:**
 > i need halp with teh tests
 
-**Expected:** Mode 1 coaching of the user's prompt only — fixes for `i` → `I`, `halp` → `help`, `teh` → `the`. The reply must **not** quote or echo the `[nativish] Hook directive` line, must not include it in **Corrected:**, and must not raise fixes against its wording (e.g. flagging `NOT` casing).
+**Expected:** Mode 1 coaching of the user's prompt only — fixes for `i` → `I`, `halp` → `help`, `teh` → `the`. The reply must **not** quote or echo the `[nativish] Hook directive` line, must not include it in the corrected line, and must not raise fixes against its wording (e.g. flagging `NOT` casing).
 
 ### H2 · Off state overrides a coach directive
 
