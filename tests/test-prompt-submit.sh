@@ -122,6 +122,10 @@ echo '--- Mode 3: slash commands ---'
 expect 'bare slash command'        "$SKIP" '/commit'
 expect 'slash command with args'   "$SKIP" '/pr-create add the thing'
 expect 'slash command, leading ws' "$SKIP" '   /test'
+# Only the exact token is a path — a prefix match here would over-correct and
+# start coaching real commands.
+expect 'command sharing a path prefix' "$SKIP" '/tmpfile'
+expect 'command: usr-prefixed'         "$SKIP" '/usrlist show all'
 
 echo '--- Mode 3: short acknowledgments ---'
 expect 'ack: ok'          "$SKIP" 'ok'
@@ -149,8 +153,12 @@ expect 'clean prose'      "$COACH" 'is it ready?'
 expect 'long substantive' "$COACH" 'please check whether the migration script handles empty tables'
 
 echo '--- Coach: near-miss cases that must NOT skip ---'
-# An absolute path is not a slash command.
+# An absolute path is not a slash command. Multi-segment paths never matched
+# (the pattern excludes `/`); single-segment top-level paths did.
 expect 'absolute path'        "$COACH" '/Users/dev/app/src/main.ts is broken, please look'
+expect 'top-level path: tmp'  "$COACH" '/tmp is full, please clean it'
+expect 'top-level path: var'  "$COACH" '/var needs cleaning'
+expect 'top-level path: etc'  "$COACH" '/etc is where it lives, right?'
 # A toggle marker only counts as the entire message.
 expect 'toggle inside prose'  "$COACH" 'the readme says nativish:off disables coaching, is that right?'
 # An ack word plus real content is a real prompt.
