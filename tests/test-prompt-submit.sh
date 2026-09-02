@@ -7,6 +7,16 @@
 # judge: the classifier is deterministic, so every case is a plain assertion
 # on the hook's stdout.
 #
+# The payload built below must mirror the real UserPromptSubmit input exactly.
+# An earlier version of this suite invented a `user_prompt` field, and the hook
+# read that same invented field, so all 40 cases passed against a classifier
+# that was a silent no-op in production. Captured from a live hook, claude
+# 2.1.258:
+#
+#   {"session_id":"...","transcript_path":"...","cwd":"...","prompt_id":"...",
+#    "permission_mode":"default","hook_event_name":"UserPromptSubmit",
+#    "prompt":"/probe"}
+#
 # Usage:
 #   tests/test-prompt-submit.sh
 #
@@ -31,7 +41,7 @@ fail=0
 
 # run <prompt> -> hook stdout
 run() {
-  jq -nc --arg p "$1" '{hook_event_name:"UserPromptSubmit",user_prompt:$p}' | "$HOOK"
+  jq -nc --arg p "$1" '{hook_event_name:"UserPromptSubmit",prompt:$p}' | "$HOOK"
 }
 
 # run_without <tool> <prompt> -> hook stdout, run against a minimal PATH holding
@@ -46,7 +56,7 @@ run_without() {
     resolved="$(command -v "$tool")" || continue
     ln -s "$resolved" "$bin/$tool"
   done
-  jq -nc --arg p "$prompt" '{hook_event_name:"UserPromptSubmit",user_prompt:$p}' \
+  jq -nc --arg p "$prompt" '{hook_event_name:"UserPromptSubmit",prompt:$p}' \
     | PATH="$bin" "$HOOK"
   rm -rf "$bin"
 }
