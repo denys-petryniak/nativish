@@ -4,7 +4,7 @@ Working notes for Claude Code sessions in this repo. Keep this file tight — on
 
 ## Commits
 
-- **Conventional Commits.** Common scopes: `english-coaching`, `readme`, `tests`. Common types: `feat`, `fix`, `test`, `docs`, `chore`.
+- **Conventional Commits.** Common scopes: `hooks`, `readme`, `english-coaching`, `tests`. Common types: `docs`, `fix`, `test`, `chore`, `feat`, `refactor`, `ci`.
 - **Split commits by intent.** Feature, tests for the feature, and version bump go in *separate* commits. Look at the run-up to any release tag for the pattern.
 - **No `Co-Authored-By` trailers.** Enforced via `.claude/settings.json` (`"includeCoAuthoredBy": false`).
 
@@ -13,21 +13,24 @@ Working notes for Claude Code sessions in this repo. Keep this file tight — on
 For each release:
 
 1. Bump version in **both** `.claude-plugin/plugin.json` *and* `.claude-plugin/marketplace.json` — they must stay in sync.
-2. Commit the bump as `chore: bump version to X.Y.Z` (separate commit, last in the release sequence).
+2. Commit the bump as `chore: bump version to X.Y.Z`, last in the sequence. If both manifests already carry it, tag directly — no empty bump commit.
 3. Annotate the tag: `git tag -a vX.Y.Z -m "vX.Y.Z — <short summary>"`.
 4. Push commits and tag together: `git push --follow-tags origin main`.
 5. Create the GitHub Release: `gh release create vX.Y.Z --title "vX.Y.Z — <summary>" --notes "..."`. Use the `## Highlights` / `## What's new` / `**Full changelog**` structure from past releases.
 
 Pushing a tag does **not** auto-create a GitHub Release. Both steps are required.
 
+The fixture suite gates **tagging**, not merging.
+
 ## Skill changes
 
 Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fixture suite at `tests/adversarial-prompts.md`:
 
-- Run `tests/run-fixtures.sh` before tagging a release — covers single-shot cases via `claude -p` + LLM-as-judge.
-- Multi-step cases (T2, T3, ST6, ST7) and strict-mode-active cases (ST2–ST5) must still be run manually per the suite doc.
-- New behavior requires a new fixture case in both `adversarial-prompts.md` and `run-fixtures.sh`. Group related cases under a `##` section — see `## Strict mode` for the pattern.
-- Treat any deviation from the **Expected** column as a regression.
+- Run `tests/run-fixtures.sh` before tagging. It sandboxes itself and loads the working tree, not the installed release. `NATIVISH_TEST_MODEL` pins the model.
+- **Results are model-dependent** — the same fixture passes on `haiku` and fails on the CLI default. Compare runs on one model or not at all.
+- `SKIP` cases must be run by hand: `T2 T3 M2 H2 H3 ST2 ST5 ST6`.
+- New behavior needs a case in both `adversarial-prompts.md` and `run-fixtures.sh` — diff their IDs to check.
+- Treat any deviation from **Expected** as a regression — but check the harness first, which has invalidated three runs.
 
 ## Superpowers skills (when available)
 
