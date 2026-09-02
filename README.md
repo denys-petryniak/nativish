@@ -4,8 +4,9 @@
 
 Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
 
-> **I need help with the build.**
-> `i` → `I` lowercase pronoun · `teh` → `the` typo
+> ✏️ I need help with the build.
+> `i` → `I` lowercase pronoun
+> `teh` → `the` typo
 
 Sure — what's failing? Paste the error output and I'll take a look.
 
@@ -38,10 +39,10 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 
 ## Known limitations
 
-- **Short commands** — `dont forget to commit` sometimes gets no check. Longer prose is reliable.
+- **Command-shaped prompts** — `dont forget to commit` often gets no check. The trigger is imperative form, not length.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
-- **Toggles reset on `/clear`** — nothing is stored on disk, so just say `/nativish:off` again.
-- **Long prompts** echo only the first 2–3 corrected sentences; the rest of the fixes still appear.
+- **Toggles reset on `/clear`** — say `/nativish:off` again.
+- **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.
 
 ---
 
