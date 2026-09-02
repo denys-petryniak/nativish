@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # macOS ships bash 3.2 and Ubuntu ships 5.x. The two have already diverged
       # once here, on a pattern bracket, so both are load-bearing.
@@ -42,7 +42,7 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: shellcheck
         run: |
@@ -63,7 +63,7 @@ jobs:
     name: manifest versions in sync
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # The release workflow requires plugin.json and marketplace.json to carry
       # the same version. They have drifted before a tag more than once.
