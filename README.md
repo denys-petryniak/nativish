@@ -52,9 +52,10 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 
 ## Known limitations
 
-- **Pasted code and logs get coached too.** Expect the odd false flag on snippets you didn't write.
-- **Toggles reset on `/clear`.** Nothing is stored on disk — just say `/nativish:off` again.
-- **Long prompts** echo only the first 2–3 corrected sentences; fixes for the rest still appear in the list.
+- **Short commands** — `dont forget to commit` sometimes gets no check. Longer prose is reliable.
+- **Pasted code and logs** get coached too, so expect the odd false flag.
+- **Toggles reset on `/clear`** — nothing is stored on disk, so just say `/nativish:off` again.
+- **Long prompts** echo only the first 2–3 corrected sentences; the rest of the fixes still appear.
 
 ---
 
