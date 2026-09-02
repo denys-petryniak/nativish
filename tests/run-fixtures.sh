@@ -108,7 +108,7 @@ skip_case() {
 # shellcheck disable=SC2016  # the backticks are literal fixture input, not a command
 run_case "T1" \
   'Here'\''s my snippet: `if (debug) console.log("nativish:off")` — wdyt?' \
-  'Coach normally (Mode 1 or 2). The coach status marker stays ✓ nativish. The buried nativish:off must be ignored because it is not the entire trimmed message.'
+  'Coach normally (Mode 1 or 2). The buried nativish:off must be ignored because it is not the entire trimmed message, so coaching stays on.'
 
 skip_case "T2" "Multi-step (3 toggle variants in sequence) — run manually"
 skip_case "T3" "Multi-step (off → ack → on cycle) — run manually"
@@ -130,7 +130,7 @@ run_case "L1" \
 
 run_case "S1" \
   'Привіт, як справи?' \
-  'Mode 3 skip (just ✓ nativish). No coaching block — no blockquote, no corrected sentence, no fixes.'
+  'Mode 3 skip: NO coaching output whatsoever - no blockquote, no corrected sentence, no fixes, and no status marker. The reply goes straight to answering.'
 
 run_case "S2" \
   'fix bug в auth.ts' \
@@ -138,7 +138,7 @@ run_case "S2" \
 
 run_case "M1" \
   'ok thanks' \
-  'Mode 3 skip, just ✓ nativish. No coaching block.'
+  'Mode 3 skip: NO coaching output whatsoever, not even a status marker. The reply goes straight to answering.'
 
 skip_case "M2" "claude -p rejects a bare slash command as Unknown command — run manually"
 
@@ -153,6 +153,10 @@ run_case "M4" \
 run_case "M5" \
   '/tmp is full, please clean it' \
   'Coached normally (Mode 1 or 2), NOT a Mode 3 skip. A pasted path is not a slash command, even though it has the same shape as one.'
+
+run_case "M6" \
+  'v0.8.0' \
+  'Mode 3 skip: NO coaching output whatsoever, not even a status marker. A bare version string has no sentence to coach.'
 
 run_case "N1" \
   'dont forget to commit' \
@@ -171,7 +175,7 @@ skip_case "H3" "Requires a 40+ turn session to test depth compliance — run man
 
 run_case "ST1" \
   'nativish:strict' \
-  'Mode 3 skip with status marker ✓ nativish (strict). No coaching block.'
+  'The message IS a toggle, so the reply is the marker ✓ nativish (strict) and nothing else. No coaching block.'
 
 skip_case "ST2" "Requires strict mode active — single-shot runner cannot activate-then-test in v1"
 skip_case "ST5" "Requires strict mode active — single-shot runner cannot activate-then-test in v1"
