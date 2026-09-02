@@ -79,8 +79,8 @@ Default mode, on, unless the user switches it for the rest of the conversation:
 
 | State | Marker | Command | Inline marker |
 | --- | --- | --- | --- |
-| **default** — chat-forgiving | `✓ en-coach` | `/nativish:on` | `nativish:on` · `nativish on` |
-| **strict** — flags the list above | `✓ en-coach (strict)` | `/nativish:strict` | `nativish:strict` · `nativish strict` |
-| **off** — no coaching | `⏸ en-coach (off)` | `/nativish:off` | `nativish:off` · `nativish off` |
+| **default** — chat-forgiving | `✓ nativish` | `/nativish:on` | `nativish:on` · `nativish on` |
+| **strict** — flags the list above | `✓ nativish (strict)` | `/nativish:strict` | `nativish:strict` · `nativish strict` |
+| **off** — no coaching | `⏸ nativish (off)` | `/nativish:off` | `nativish:off` · `nativish off` |
 
-Inline markers are matched case-insensitively after trimming, and each command works from any state. Markers appear only in Mode 3 skips — in Modes 1 and 2 the blockquote itself signals the state. A toggle's own reply is a Mode 3 skip showing the new marker, which is how the user knows it took. While off, emit `⏸ en-coach (off)` for every message and do not coach.
+Inline markers are matched case-insensitively after trimming, and each command works from any state. Markers appear only in Mode 3 skips — in Modes 1 and 2 the blockquote itself signals the state. A toggle's own reply is a Mode 3 skip showing the new marker, which is how the user knows it took. While off, emit `⏸ nativish (off)` for every message and do not coach.
