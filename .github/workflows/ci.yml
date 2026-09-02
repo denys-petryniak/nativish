@@ -16,31 +16,24 @@ concurrency:
 
 jobs:
   test:
-    name: test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: test
+    runs-on: macos-latest
     timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v5
 
-      # macOS ships bash 3.2 and Ubuntu ships 5.x. The two have already diverged
-      # once here, on a pattern bracket, so both are load-bearing — and the
-      # macOS job is the ONLY 3.2 coverage. Asserted, not just printed: if the
-      # image stops shipping 3.2, this must fail rather than quietly pass while
-      # the coverage disappears.
+      # macOS system bash is 3.2, which is what the hooks target and the oldest
+      # thing anyone runs. bash is backward compatible, so 3.2 is the strict
+      # subset — passing here covers bash 5 too, and one job says it.
+      #
+      # Asserted, not just printed: if the image stops shipping 3.2, this must
+      # fail rather than quietly pass with the coverage gone.
       - name: bash version
         run: |
           /bin/bash --version | head -1
           major=$(/bin/bash -c 'echo "${BASH_VERSINFO[0]}"')
-          case "${{ matrix.os }}" in
-            macos-*) want=3 ;;
-            *)       want=5 ;;
-          esac
-          [ "$major" = "$want" ] || {
-            echo "::error::expected bash $want on ${{ matrix.os }}, got $major"
+          [ "$major" = 3 ] || {
+            echo "::error::expected bash 3 on macos-latest, got $major"
             exit 1
           }
 
@@ -78,16 +71,9 @@ jobs:
           /tmp/shfmt --version
           /tmp/shfmt -i 2 -ci -d hooks/*.sh tests/*.sh
 
-  manifests:
-    name: manifest versions in sync
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v5
-
-      # The release workflow requires plugin.json and marketplace.json to carry
-      # the same version. They have drifted before a tag more than once.
-      - name: compare
+      # The release process needs plugin.json and marketplace.json to carry the
+      # same version. They have drifted before a tag more than once.
+      - name: manifest versions in sync
         run: |
           plugin=$(python3 -c "import json;print(json.load(open('.claude-plugin/plugin.json'))['version'])")
           market=$(python3 -c "import json;print(json.load(open('.claude-plugin/marketplace.json'))['metadata']['version'])")
