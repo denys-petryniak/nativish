@@ -10,10 +10,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -22,9 +27,22 @@ jobs:
       - uses: actions/checkout@v5
 
       # macOS ships bash 3.2 and Ubuntu ships 5.x. The two have already diverged
-      # once here, on a pattern bracket, so both are load-bearing.
+      # once here, on a pattern bracket, so both are load-bearing — and the
+      # macOS job is the ONLY 3.2 coverage. Asserted, not just printed: if the
+      # image stops shipping 3.2, this must fail rather than quietly pass while
+      # the coverage disappears.
       - name: bash version
-        run: /bin/bash --version | head -1
+        run: |
+          /bin/bash --version | head -1
+          major=$(/bin/bash -c 'echo "${BASH_VERSINFO[0]}"')
+          case "${{ matrix.os }}" in
+            macos-*) want=3 ;;
+            *)       want=5 ;;
+          esac
+          [ "$major" = "$want" ] || {
+            echo "::error::expected bash $want on ${{ matrix.os }}, got $major"
+            exit 1
+          }
 
       # Not the same check as shellcheck: shellcheck once passed a file that
       # bash 3.2 refused to load, because an apostrophe in a heredoc nested in
@@ -41,6 +59,7 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
@@ -62,6 +81,7 @@ jobs:
   manifests:
     name: manifest versions in sync
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
 
