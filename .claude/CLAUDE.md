@@ -37,8 +37,7 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 
 - `tests/run-fixtures.sh` sandboxes itself and loads the working tree, not the installed release. `NATIVISH_TEST_MODEL` pins the model.
 - **Results are model-dependent** — the same fixture passes on `haiku` and fails on the CLI default. Compare runs on one model or not at all.
-- `SKIP` cases must be run by hand: `T2 T3 M2 H2 H3`.
-- New behavior needs a case in `adversarial-prompts.md`, and in `run-fixtures.sh` too unless it needs a multi-turn session. The md is the superset: its IDs minus the runner's must be exactly `T2 T3 M2 H2 H3`.
+- The md is the superset. Its IDs minus the runner's must be exactly the five manual cases, `T2 T3 M2 H2 H3`; run those by hand. New behavior needs a case in both files unless it needs a multi-turn session.
 - Treat any deviation from **Expected** as a regression — but check the harness first, which has invalidated three runs.
 
 ## Decisions — do not re-litigate
@@ -46,9 +45,9 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 - **Two hooks, shell only.** Nowhere cheaper to put the rulebook.
 - **The hook reminds, it does not classify.** It was a Mode 3 classifier once — JSON parser, path denylist, non-ASCII counter — and that was deleted, because the rulebook already specifies every mode. Fixtures cover them.
 - **Zero external dependencies.** Not even `jq`; `cat` is the only external command either hook invokes.
-- **No PowerShell twin of the hooks.** Shell-form hooks get Git Bash on Windows and PowerShell only when Git Bash is absent, so a second implementation would double the surface to serve the case where bash is missing entirely. Documented as a requirement in the README instead.
+- **No PowerShell twin of the hooks.** Windows gets Git Bash for shell-form hooks; a twin would double the surface to serve machines with no bash at all. The README states the requirement.
 - **No state on disk.** Toggles live in the conversation and reset on `/clear` — documented in the README, not fixed.
-- **Two states, on and off.** Strict mode shipped through v0.8.0 and was then removed: it forked every "what NOT to flag" rule into a second ruleset, and three of its four fixtures could never run single-shot. Adding a third state means paying that again.
+- **Two states, on and off.** Strict mode forked every "what NOT to flag" rule into a second ruleset, and three of its four fixtures could never run single-shot. A third state means paying that again.
 - **No user-specific tuning of the rulebook.** It would bake one L1 into an L1-agnostic tool.
 - **Keep the rulebook lean.** Adding words to `SKILL.md` does not reliably change behaviour.
 
@@ -57,10 +56,10 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 Each of these failed silently, or reported success while measuring nothing.
 
 - **A green suite can prove nothing.** The unit tests once invented a payload field and the hook read the same invented field, so every case passed against a hook that had never run. Test and implementation sharing one wrong assumption is the only bug a green suite cannot see.
-- **`shellcheck` is not a parser.** It passed a file bash 3.2 refused to load — an apostrophe inside a heredoc nested in `$( )`. Run `bash -n` under `/bin/bash` as well. CI is Linux-only, so it runs bash 5 and cannot see this: the 3.2 check is local, and the constraint lives in `run-fixtures.sh`, which you run on macOS before tagging anyway.
+- **`shellcheck` is not a parser.** It passed a file bash 3.2 refused to load — an apostrophe inside a heredoc nested in `$( )`. Run `bash -n` under `/bin/bash` as well; CI is Linux-only, so it runs bash 5 and cannot see this.
 - **Equal scores are not equivalence.** A rulebook-only versus rulebook-plus-reminder A/B came out even because the run was too shallow to induce any drift in either arm.
 - **A sentinel that matches both branches passes vacuously.** An early suite used `Mode 3` as its skip marker, but that string also appeared in the coach directive.
-- **Piping the fixture suite hides its verdict.** `tests/run-fixtures.sh | tee log` reports `tee`'s exit status, so a run with failures looks like a pass. The output is long enough that piping is the natural thing to do. Redirect instead — `> log 2>&1` — or read the `Fail:` count, never the exit code of a pipeline.
+- **Piping the suite hides its verdict.** `run-fixtures.sh | tee log` reports `tee`'s status, so a failing run reads as a pass. Redirect instead, or read the `Fail:` count.
 - **GitHub collapses a multi-line blockquote.** Consecutive `>` lines are one CommonMark paragraph, so the newline is a soft break the browser renders as a space. The terminal keeps it, so the coaching block looks right in a session and wrong in the README and release notes — hard-break those with `<br>`.
 
 ## Superpowers skills (when available)
