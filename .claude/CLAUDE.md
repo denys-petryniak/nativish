@@ -6,7 +6,7 @@ Working notes for Claude Code sessions in this repo. Keep this file tight — on
 
 Two hooks, one feature. The rules reach the model either once per session or on every prompt — there is no third option, since injecting them once from `UserPromptSubmit` would need on-disk state.
 
-- `session-start.sh` injects the rulebook, on all five `SessionStart` sources. Its stdout becomes conversation context.
+- `session-start.sh` injects the rulebook, on every `SessionStart` source. Its stdout becomes conversation context.
 - `prompt-submit.sh` restates the rule before each response. It reads nothing and decides nothing.
 
 The rulebook is the load-bearing half: probed, the reminder alone produces **zero** coaching, because the modes it names are defined nowhere else.
@@ -21,7 +21,7 @@ The rulebook is the load-bearing half: probed, the reminder alone produces **zer
 
 For each release:
 
-1. Bump `version` in `.claude-plugin/plugin.json` — the only place it lives. `marketplace.json` carries none, so there is nothing to keep in sync.
+1. Bump `version` in `.claude-plugin/plugin.json` — the only place it lives.
 2. Commit the bump as `chore: bump version to X.Y.Z`, last in the sequence. If the manifest already carries it, tag directly — no empty bump commit.
 3. Annotate the tag: `git tag -a vX.Y.Z -m "vX.Y.Z — <short summary>"`.
 4. Push commits and tag together: `git push --follow-tags origin main`.
@@ -59,6 +59,7 @@ Each of these failed silently, or reported success while measuring nothing.
 - **`shellcheck` is not a parser.** It passed a file bash 3.2 refused to load — an apostrophe inside a heredoc nested in `$( )`. Run `bash -n` under `/bin/bash` as well.
 - **Equal scores are not equivalence.** A rulebook-only versus rulebook-plus-reminder A/B came out even because the run was too shallow to induce any drift in either arm.
 - **A sentinel that matches both branches passes vacuously.** An early suite used `Mode 3` as its skip marker, but that string also appeared in the coach directive.
+- **Piping the fixture suite hides its verdict.** `tests/run-fixtures.sh | tee log` reports `tee`'s exit status, so a run with failures looks like a pass. The output is long enough that piping is the natural thing to do. Redirect instead — `> log 2>&1` — or read the `Fail:` count, never the exit code of a pipeline.
 - **GitHub collapses a multi-line blockquote.** Consecutive `>` lines are one CommonMark paragraph, so the newline is a soft break the browser renders as a space. The terminal keeps it, so the coaching block looks right in a session and wrong in the README and release notes — hard-break those with `<br>`.
 
 ## Superpowers skills (when available)

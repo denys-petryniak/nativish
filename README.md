@@ -33,10 +33,12 @@ Restart your session so the hooks load.
 
 | Command | Effect |
 | --- | --- |
-| `/nativish:off` | stop coaching |
-| `/nativish:on` | resume — forgiving about chat style (`dont`, `pls`, lowercase starts) |
+| `/nativish:off` | stop coaching for this conversation |
+| `/nativish:on` | turn it back on |
 
-Or send `nativish off` / `on` as a plain message. Slash commands, acks, bare paths and non-Latin text are skipped silently.
+Or send `nativish off` / `on` as a plain message.
+
+Chat style is never flagged — `dont`, `pls`, lowercase starts. Slash commands, acks, bare paths and non-Latin text are skipped silently.
 
 ## Privacy
 
