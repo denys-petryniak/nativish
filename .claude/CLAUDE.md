@@ -46,6 +46,7 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 - **Two hooks, shell only.** Nowhere cheaper to put the rulebook.
 - **The hook reminds, it does not classify.** It was a Mode 3 classifier once — JSON parser, path denylist, non-ASCII counter — and that was deleted, because the rulebook already specifies every mode. Fixtures cover them.
 - **Zero external dependencies.** Not even `jq`; `cat` is the only external command either hook invokes.
+- **No PowerShell twin of the hooks.** Shell-form hooks get Git Bash on Windows and PowerShell only when Git Bash is absent, so a second implementation would double the surface to serve the case where bash is missing entirely. Documented as a requirement in the README instead.
 - **No state on disk.** Toggles live in the conversation and reset on `/clear` — documented in the README, not fixed.
 - **Two states, on and off.** Strict mode shipped through v0.8.0 and was then removed: it forked every "what NOT to flag" rule into a second ruleset, and three of its four fixtures could never run single-shot. Adding a third state means paying that again.
 - **No user-specific tuning of the rulebook.** It would bake one L1 into an L1-agnostic tool.

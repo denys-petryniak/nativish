@@ -47,6 +47,7 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 ## Known limitations
 
 - **Short imperative prompts** — `dont forget to commit` should draw a compliment, but sometimes slips past unchecked. Model-dependent, not by design.
+- **Windows needs Git Bash** — hooks run through it. With only PowerShell available, the `.sh` hooks never execute and you get no coaching at all, silently.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
 - **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.
