@@ -47,6 +47,7 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 - **The hook reminds, it does not classify.** It was a Mode 3 classifier once — JSON parser, path denylist, non-ASCII counter — and that was deleted, because the rulebook already specifies every mode. Fixtures cover them.
 - **Zero external dependencies.** Not even `jq`; `cat` is the only external command either hook invokes.
 - **No state on disk.** Toggles live in the conversation and reset on `/clear` — documented in the README, not fixed.
+- **Two states, on and off.** Strict mode shipped through v0.8.0 and was then removed: it forked every "what NOT to flag" rule into a second ruleset, and three of its four fixtures could never run single-shot. Adding a third state means paying that again.
 - **No user-specific tuning of the rulebook.** It would bake one L1 into an L1-agnostic tool.
 - **Keep the rulebook lean.** Adding words to `SKILL.md` does not reliably change behaviour.
 
@@ -66,7 +67,7 @@ If the `superpowers` plugin is loaded in your Claude Code session, prefer these 
 
 - **`superpowers:writing-skills`** — before any edit to `skills/english-coaching/SKILL.md`. Catches frontmatter mistakes, missing when-to-trigger guidance, and other skill-authoring issues.
 - **`superpowers:test-driven-development`** — pairs with the fixture suite. Add the new fixture case to `tests/adversarial-prompts.md` *before* the SKILL.md change, so the change is gated by a concrete expectation.
-- **`superpowers:brainstorming`** — before designing any new feature (new state, toggle, output mode). The strict-mode design was a good fit; jumping straight to implementation would have skipped useful tradeoff discussion.
+- **`superpowers:brainstorming`** — before designing any new feature (new state, toggle, output mode). Jumping straight to implementation skips the tradeoff discussion, which is where most of these get killed.
 - **`superpowers:verification-before-completion`** — before tagging a release or claiming the suite passes. The fixture suite must actually be run, not just intended.
 
 If superpowers isn't installed, the conventions above still apply.

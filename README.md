@@ -28,10 +28,9 @@ Restart your session so the hooks load.
 | Command | Effect |
 | --- | --- |
 | `/nativish:off` | stop coaching |
-| `/nativish:on` | back to normal — forgiving about chat style (`dont`, `pls`, lowercase starts) |
-| `/nativish:strict` | flag chat style too |
+| `/nativish:on` | resume — forgiving about chat style (`dont`, `pls`, lowercase starts) |
 
-Type `nativish off` / `on` / `strict` as a whole message if you'd rather not autocomplete. Slash commands, short acks (`ok`, `thanks`), bare version strings or paths, and non-Latin messages produce no output at all.
+Type `nativish off` / `on` as a whole message if you'd rather not autocomplete. Slash commands, short acks (`ok`, `thanks`), bare version strings or paths, and non-Latin messages produce no output at all.
 
 ## Privacy
 
