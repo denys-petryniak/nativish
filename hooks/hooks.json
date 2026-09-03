@@ -2,12 +2,10 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear|compact|fork",
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"",
-            "async": false
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\""
           }
         ]
       }
@@ -17,8 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/prompt-submit.sh\"",
-            "async": false
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/prompt-submit.sh\""
           }
         ]
       }
