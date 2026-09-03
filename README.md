@@ -4,6 +4,12 @@
 
 Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
 
+You type:
+
+> i need help with teh build
+
+Claude answers, with the fix on top:
+
 > ✏️ I need help with the build.<br>
 > `i` → `I` lowercase pronoun<br>
 > `teh` → `the` typo
@@ -30,15 +36,15 @@ Restart your session so the hooks load.
 | `/nativish:off` | stop coaching |
 | `/nativish:on` | resume — forgiving about chat style (`dont`, `pls`, lowercase starts) |
 
-Type `nativish off` / `on` as a whole message if you'd rather not autocomplete. Slash commands, short acks (`ok`, `thanks`), bare version strings or paths, and non-Latin messages produce no output at all.
+Or send `nativish off` / `on` as a plain message. Slash commands, acks, bare paths and non-Latin text are skipped silently.
 
 ## Privacy
 
-Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/) and [`skills/english-coaching/`](skills/english-coaching/).
+Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/).
 
 ## Known limitations
 
-- **Command-shaped prompts** — `dont forget to commit` often gets no check. The trigger is imperative form, not length.
+- **Short imperative prompts** — `dont forget to commit` should draw a compliment, but sometimes slips past unchecked. Model-dependent, not by design.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
 - **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.
