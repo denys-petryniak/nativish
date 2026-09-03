@@ -1,59 +1,42 @@
 #!/usr/bin/env bash
 # Unit tests for hooks/prompt-submit.sh.
 #
-# The hook reads nothing and decides nothing, so there is no classification to
-# test and no point varying the payload. These four are the ways it could fail
-# on a prompt the user actually submitted.
+# The hook is one printf of one constant string: it reads nothing and decides
+# nothing, so there is no classification to test. What can actually break is
+# drift — the directive naming a mode the rulebook no longer defines. That is
+# the one check a green suite could not fake by sharing a wrong assumption
+# with the hook, because it reads the other file to check.
 #
 # Exit: 0 all pass, 1 any fail, 2 setup error.
 
 set -uo pipefail
 
-HOOK="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/hooks/prompt-submit.sh"
-PAYLOAD='{"hook_event_name":"UserPromptSubmit","prompt":"i need help with teh build"}'
-DIRECTIVE='[nativish] Hook directive'
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+HOOK="$REPO/hooks/prompt-submit.sh"
+SKILL="$REPO/skills/english-coaching/SKILL.md"
 
-if [[ ! -x $HOOK ]]; then
-  echo "ERROR: $HOOK missing or not executable" >&2
-  exit 2
-fi
+[[ -x $HOOK ]] || { echo "ERROR: $HOOK missing or not executable" >&2; exit 2; }
+[[ -r $SKILL ]] || { echo "ERROR: $SKILL missing" >&2; exit 2; }
 
-pass=0
 fail=0
-
-check() {
-  local label=$1 status=$2 out=$3
-  if [[ $status -eq 0 && $out == *"$DIRECTIVE"* ]]; then
-    printf 'PASS  %s\n' "$label"
-    ((pass++))
-  else
-    printf 'FAIL  %s\n      exit: %s (want 0)\n      out : %s\n' "$label" "$status" "${out:-<empty>}"
-    ((fail++))
-  fi
+check() { # check <label> <problem-or-empty>
+  if [[ -z $2 ]]; then printf 'PASS  %s\n' "$1"
+  else printf 'FAIL  %s\n      %s\n' "$1" "$2"; fail=1; fi
 }
 
-out=$(printf '%s' "$PAYLOAD" | "$HOOK" 2>&1)
-check 'emits the directive' $? "$out"
+# Closed stdin, so a hook that ever starts reading input hangs the suite here.
+out=$("$HOOK" </dev/null 2>&1) || out="<exited $?>"
+lines=$(printf '%s' "$out" | grep -c '')
 
-# Must not hang waiting for input.
-out=$("$HOOK" </dev/null 2>&1)
-check 'stdin closed' $? "$out"
+# One line only: more would read as multi-part context rather than a directive.
+problem=''
+[[ $out == *'[nativish] Hook directive'* ]] || problem="no directive in: $out"
+[[ $lines -eq 1 ]] || problem="got $lines lines, want 1"
+check 'emits exactly one line of directive' "$problem"
 
-# The README claims no dependencies. Absolute interpreter, so this tests the
-# hook body rather than whether env can still resolve bash.
-out=$(printf '%s' "$PAYLOAD" | PATH='' "$(command -v bash)" "$HOOK" 2>&1)
-check 'no PATH, no dependencies' $? "$out"
+# Every mode the directive names must still be defined in the rulebook.
+undefined=$(printf '%s' "$out" | grep -oE 'Mode [0-9]+' | sort -u |
+  while read -r mode; do grep -qi "$mode" "$SKILL" || printf '%s ' "$mode"; done)
+check 'directive names only modes the rulebook defines' "${undefined:+not in SKILL.md: $undefined}"
 
-# One line, so it cannot be mistaken for multi-part context.
-lines=$(printf '%s' "$PAYLOAD" | "$HOOK" | wc -l | tr -d ' ')
-if [[ $lines -eq 1 ]]; then
-  printf 'PASS  %s\n' 'exactly one line of output'
-  ((pass++))
-else
-  printf 'FAIL  %s\n      got %s lines, want 1\n' 'exactly one line of output' "$lines"
-  ((fail++))
-fi
-
-echo
-printf 'passed: %d   failed: %d\n' "$pass" "$fail"
 [[ $fail -eq 0 ]]

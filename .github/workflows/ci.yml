@@ -10,8 +10,14 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # macOS ships bash 3.2 at /bin/bash, which has parsed less than shellcheck accepts.
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
-      - run: shellcheck hooks/*.sh tests/*.sh
+      - run: /bin/bash -n hooks/*.sh tests/*.sh
+      - if: runner.os == 'Linux'
+        run: shellcheck hooks/*.sh tests/*.sh
       - run: tests/test-prompt-submit.sh
