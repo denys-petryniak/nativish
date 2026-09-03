@@ -37,7 +37,7 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 
 - `tests/run-fixtures.sh` sandboxes itself and loads the working tree, not the installed release. `NATIVISH_TEST_MODEL` pins the model.
 - **Results are model-dependent** — the same fixture passes on `haiku` and fails on the CLI default. Compare runs on one model or not at all.
-- `SKIP` cases must be run by hand: `T2 T3 M2 H2 H3 ST2 ST5 ST6`.
+- `SKIP` cases must be run by hand: `T2 T3 M2 H2 H3`.
 - New behavior needs a case in both `adversarial-prompts.md` and `run-fixtures.sh` — diff their IDs to check.
 - Treat any deviation from **Expected** as a regression — but check the harness first, which has invalidated three runs.
 
