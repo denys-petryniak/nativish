@@ -2,7 +2,13 @@
 
 [![CI](https://github.com/denys-petryniak/nativish/actions/workflows/ci.yml/badge.svg)](https://github.com/denys-petryniak/nativish/actions/workflows/ci.yml) [![Latest release](https://img.shields.io/github/v/release/denys-petryniak/nativish?label=release&color=blue)](https://github.com/denys-petryniak/nativish/releases/latest) [![License](https://img.shields.io/github/license/denys-petryniak/nativish?color=green)](LICENSE) [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757?logo=anthropic&logoColor=white)](https://github.com/topics/claude-code-plugin) [![Stars](https://img.shields.io/github/stars/denys-petryniak/nativish?style=flat&color=ffcb05)](https://github.com/denys-petryniak/nativish/stargazers)
 
-Corrects your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
+Checks your English before every reply in [Claude Code](https://www.anthropic.com/claude-code). Built for non-native speakers who code with Claude.
+
+You type:
+
+> i need help with teh build
+
+Claude answers, with the fix on top:
 
 > ✏️ I need help with the build.<br>
 > `i` → `I` lowercase pronoun<br>
@@ -27,19 +33,21 @@ Restart your session so the hooks load.
 
 | Command | Effect |
 | --- | --- |
-| `/nativish:off` | stop coaching |
-| `/nativish:on` | back to normal — forgiving about chat style (`dont`, `pls`, lowercase starts) |
-| `/nativish:strict` | flag chat style too |
+| `/nativish:off` | stop coaching for this conversation |
+| `/nativish:on` | turn it back on |
 
-Type `nativish off` / `on` / `strict` as a whole message if you'd rather not autocomplete. Slash commands, short acks (`ok`, `thanks`), bare version strings or paths, and non-Latin messages produce no output at all.
+Or send `nativish off` / `on` as a plain message.
+
+Chat style is never flagged — `dont`, `pls`, lowercase starts. Slash commands, acks, bare paths and non-Latin text are skipped silently.
 
 ## Privacy
 
-Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/) and [`skills/english-coaching/`](skills/english-coaching/).
+Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/).
 
 ## Known limitations
 
-- **Command-shaped prompts** — `dont forget to commit` often gets no check. The trigger is imperative form, not length.
+- **Short imperative prompts** — `dont forget to commit` should draw a compliment, but sometimes slips past unchecked. Model-dependent, not by design.
+- **Windows needs Git Bash** — hooks run through it. With only PowerShell available, the `.sh` hooks never execute and you get no coaching at all, silently.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
 - **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.

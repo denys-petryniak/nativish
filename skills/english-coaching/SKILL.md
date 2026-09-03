@@ -59,29 +59,28 @@ Emit **nothing at all** — no blockquote, no marker, no mention of coaching. Go
 
 ## What NOT to flag
 
-Chat style, not mistakes. Do not invent fixes for these — though the corrected line may still render them in full, since it is a rewrite in correct English. In **strict mode** the first four become real fixes.
+Chat style, not mistakes. Do not invent fixes for these — though the corrected line may still render them in full, since it is a rewrite in correct English.
 
-- **Lowercase first letter** — `is it useful?` *(strict: capitalize)*
-- **Missing terminal period** *(strict: add)*
-- **Missing apostrophe** — `dont`, `cant`, `lets` *(strict: `don't`, `can't`, `let's`)*
-- **Abbreviations** — `smth`, `wdyt`, `pls`, `tbh`, `imo` *(strict: expand)*
-- **Embedded non-Latin words** — treat as proper nouns: `fix bug в auth.ts` coaches the English and leaves `в` alone. Same for filenames and identifiers. *(both modes)*
+- **Lowercase first letter** — `is it useful?`
+- **Missing terminal period**
+- **Missing apostrophe** — `dont`, `cant`, `lets`
+- **Abbreviations** — `smth`, `wdyt`, `pls`, `tbh`, `imo`
+- **Embedded non-Latin words** — treat as proper nouns: `fix bug в auth.ts` coaches the English and leaves `в` alone. Same for filenames and identifiers.
 
-So in default mode `dont forget` and `pls help` are clean → Mode 2, while `i need help` is Mode 1 with `i → I` as the only fix.
+So `dont forget` and `pls help` are clean → Mode 2, while `i need help` is Mode 1 with `i → I` as the only fix.
 
-**ALWAYS flag, both modes:**
+**ALWAYS flag:**
 
 - **Lowercase pronoun `i`** → `I`. The one casing rule that overrides chat-style forgiveness.
 - **Proper nouns and acronyms** — `github` → `GitHub`, `eng` → `English`.
 
 ## State
 
-Default mode, on, unless the user switches it for the rest of the conversation:
+Coaching is on unless the user turns it off for the rest of the conversation:
 
 | State | Command | Inline marker | Reply to the toggle |
 | --- | --- | --- | --- |
-| **default** — chat-forgiving | `/nativish:on` | `nativish:on` · `nativish on` | `✓ nativish` |
-| **strict** — flags the list above | `/nativish:strict` | `nativish:strict` · `nativish strict` | `✓ nativish (strict)` |
+| **on** — the default | `/nativish:on` | `nativish:on` · `nativish on` | `✓ nativish` |
 | **off** — no coaching | `/nativish:off` | `nativish:off` · `nativish off` | `⏸ nativish (off)` |
 
-Inline markers are matched case-insensitively after trimming, and each command works from any state. The marker in the last column appears **once**, as the reply to the toggle itself — that is how the user knows the switch took. It appears nowhere else: not on later messages, not while off. While off, coach nothing and say nothing about coaching.
+Inline markers are matched case-insensitively after trimming, and either command works from either state. The marker in the last column appears **once**, as the reply to the toggle itself — that is how the user knows the switch took. It appears nowhere else: not on later messages, not while off. While off, coach nothing and say nothing about coaching.

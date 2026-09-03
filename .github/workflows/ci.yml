@@ -13,5 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      # shellcheck lints, it does not parse: run both.
+      - run: bash -n hooks/*.sh tests/*.sh
       - run: shellcheck hooks/*.sh tests/*.sh
       - run: tests/test-prompt-submit.sh
