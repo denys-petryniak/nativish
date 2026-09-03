@@ -1,6 +1,6 @@
 # Adversarial Prompts — Nativish
 
-Manual fixture suite for the `english-coaching` skill. Run before each release to lock in behavior across SKILL.md changes. Treat any deviation from **Expected** as a regression.
+Fixture suite for the `english-coaching` skill. Run before each release to lock in behavior across SKILL.md changes. Treat any deviation from **Expected** as a regression.
 
 ## How to run
 
@@ -10,7 +10,7 @@ Manual fixture suite for the `english-coaching` skill. Run before each release t
 tests/run-fixtures.sh
 ```
 
-Uses `claude -p` per case and LLM-as-judge for verdicts. It prints `SKIP` and a reason for every case it cannot drive single-shot; run those by hand below.
+Uses `claude -p` per case and LLM-as-judge for verdicts. It runs 14 of the cases below. The five marked **(manual)** need a real multi-turn session, so the runner does not pretend to cover them — run those by hand.
 
 **Manual:**
 
@@ -29,7 +29,7 @@ Uses `claude -p` per case and LLM-as-judge for verdicts. It prints `SKIP` and a 
 
 **Expected:** Coach normally (Mode 1 or 2). A marker only counts as a toggle when it is the *entire* trimmed message.
 
-### T2 · Exact toggle marker (case + whitespace variants) MUST disable
+### T2 · Exact toggle marker (case + whitespace variants) MUST disable **(manual)**
 
 Send each as a standalone message:
 - `nativish:off`
@@ -38,7 +38,7 @@ Send each as a standalone message:
 
 **Expected:** Each disables the coach, replying `⏸ nativish (off)` once. The next non-toggle message gets no coaching and no marker.
 
-### T3 · Off → ack → on cycle
+### T3 · Off → ack → on cycle **(manual)**
 
 1. Send: `nativish:off`
 2. Send: `thanks`
@@ -46,12 +46,6 @@ Send each as a standalone message:
 4. Send: `i wnat to add smth`
 
 **Expected:** Step 2 is silent — no coaching, no marker. Step 4 shows Mode 1 with `i` → `I` and `wnat` → `want` (`smth` is an allowed abbreviation, not flagged).
-
-### T4 · A dropped toggle name is not a toggle
-
-**Input:** `nativish:strict`
-
-**Expected:** No `✓ nativish (strict)` marker, and no claim that a strict mode exists or was enabled — there are only two states. A bare identifier is a Mode 3 skip, so the reply is silent and goes straight to answering.
 
 ---
 
@@ -111,7 +105,7 @@ Send each as a standalone message:
 **Input:** `ok thanks`
 **Expected:** Mode 3 skip — no coaching output at all, not even a marker.
 
-### M2 · Slash command → skip
+### M2 · Slash command → skip **(manual)**
 
 **Input:** `/commit` (in an interactive session — `claude -p /commit` returns `Unknown command` before the model ever sees it, so this case cannot be automated)
 **Expected:** Mode 3 skip — no coaching output at all. The skill does not coach the slash-command text or its arguments.
@@ -142,7 +136,7 @@ Send each as a standalone message:
 ### N1 · Missing apostrophe + lowercase first letter → not flagged
 
 **Input:** `dont forget to commit`
-**Expected:** Mode 2 compliment. Flagging `dont` or the lowercase `d` is a regression — both are chat style, not mistakes.
+**Expected:** Mode 2 compliment. Flagging `dont` or the lowercase `d` is a regression — both are chat style, not mistakes. This is the case that guards the strict-mode removal: flagging these *was* strict mode.
 
 ### N2 · Lowercase pronoun `i` → MUST be flagged
 
@@ -162,14 +156,14 @@ The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into 
 
 **Expected:** Mode 1 coaching of the user's prompt only — fixes for `i` → `I`, `halp` → `help`, `teh` → `the`. The reply must **not** quote or echo the `[nativish] Hook directive` line, must not include it in the corrected line, and must not raise fixes against its wording (e.g. flagging `NOT` casing).
 
-### H2 · Off state overrides a coach directive
+### H2 · Off state overrides a coach directive **(manual)**
 
 1. Send: `nativish:off`
 2. Send: `i need halp`
 
 **Expected:** Step 2 is silent — no coaching and no marker, even though the hook injected a directive telling Claude to coach. The hook cannot read plugin state, so the off state always wins.
 
-### H3 · Coaching survives conversation depth
+### H3 · Coaching survives conversation depth **(manual)**
 
 Hold a session past 40 exchanges of ordinary work, then send a prompt with an obvious mistake (e.g. `i want to chekc the logs`).
 
