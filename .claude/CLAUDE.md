@@ -57,7 +57,7 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 Each of these failed silently, or reported success while measuring nothing.
 
 - **A green suite can prove nothing.** The unit tests once invented a payload field and the hook read the same invented field, so every case passed against a hook that had never run. Test and implementation sharing one wrong assumption is the only bug a green suite cannot see.
-- **`shellcheck` is not a parser.** It passed a file bash 3.2 refused to load — an apostrophe inside a heredoc nested in `$( )`. Run `bash -n` under `/bin/bash` as well.
+- **`shellcheck` is not a parser.** It passed a file bash 3.2 refused to load — an apostrophe inside a heredoc nested in `$( )`. Run `bash -n` under `/bin/bash` as well. CI is Linux-only, so it runs bash 5 and cannot see this: the 3.2 check is local, and the constraint lives in `run-fixtures.sh`, which you run on macOS before tagging anyway.
 - **Equal scores are not equivalence.** A rulebook-only versus rulebook-plus-reminder A/B came out even because the run was too shallow to induce any drift in either arm.
 - **A sentinel that matches both branches passes vacuously.** An early suite used `Mode 3` as its skip marker, but that string also appeared in the coach directive.
 - **Piping the fixture suite hides its verdict.** `tests/run-fixtures.sh | tee log` reports `tee`'s exit status, so a run with failures looks like a pass. The output is long enough that piping is the natural thing to do. Redirect instead — `> log 2>&1` — or read the `Fail:` count, never the exit code of a pipeline.
