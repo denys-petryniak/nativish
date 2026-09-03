@@ -21,8 +21,8 @@ The rulebook is the load-bearing half: probed, the reminder alone produces **zer
 
 For each release:
 
-1. Bump version in **both** `.claude-plugin/plugin.json` *and* `.claude-plugin/marketplace.json` — they must stay in sync.
-2. Commit the bump as `chore: bump version to X.Y.Z`, last in the sequence. If both manifests already carry it, tag directly — no empty bump commit.
+1. Bump `version` in `.claude-plugin/plugin.json` — the only place it lives. `marketplace.json` carries none, so there is nothing to keep in sync.
+2. Commit the bump as `chore: bump version to X.Y.Z`, last in the sequence. If the manifest already carries it, tag directly — no empty bump commit.
 3. Annotate the tag: `git tag -a vX.Y.Z -m "vX.Y.Z — <short summary>"`.
 4. Push commits and tag together: `git push --follow-tags origin main`.
 5. Create the GitHub Release: `gh release create vX.Y.Z --title "vX.Y.Z — <summary>" --notes "..."`. Use the `## Highlights` / `## What's new` / `**Full changelog**` structure from past releases.

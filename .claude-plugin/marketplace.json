@@ -2,15 +2,12 @@
   "name": "nativish",
   "owner": { "name": "Denys Petryniak" },
   "metadata": {
-    "description": "Nativish — writing coach plugin for Claude Code",
-    "version": "0.8.0"
+    "description": "Nativish — writing coach plugin for Claude Code"
   },
   "plugins": [
     {
       "name": "nativish",
-      "source": "./",
-      "description": "Coach the user's English on every message",
-      "version": "0.8.0"
+      "source": "./"
     }
   ]
 }
