@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 # Unit tests for hooks/prompt-submit.sh.
 #
-# The hook is one printf of one constant string: it reads nothing and decides
-# nothing, so there is no classification to test. What can actually break is
-# drift — the directive naming a mode the rulebook no longer defines. That is
-# the one check a green suite could not fake by sharing a wrong assumption
-# with the hook, because it reads the other file to check.
+# The hook is one printf of one constant string — no logic to test. What breaks
+# is drift: a mode named in the directive that the rulebook no longer defines.
 #
 # Exit: 0 all pass, 1 any fail, 2 setup error.
 
