@@ -46,7 +46,7 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 
 ## Known limitations
 
-- **Short imperative prompts** — `dont forget to commit` should draw a compliment, but sometimes slips past unchecked. Model-dependent, not by design.
+- **A turn with real work in it** — `/tmp is full, please clean it` slips past unchecked on stronger models, because the reply goes straight to the task. Model-dependent, not by design.
 - **Windows needs Git Bash** — hooks run through it. With only PowerShell available, the `.sh` hooks never execute and you get no coaching at all, silently.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
