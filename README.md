@@ -6,21 +6,24 @@ Checks your English before every reply in [Claude Code](https://www.anthropic.co
 
 You type:
 
-> i need help with teh build
+> the tests is failing after i update the config, can you explane why
 
 Claude answers, with the fix on top:
 
-> ✏️ I need help with the build.<br>
-> `i` → `I` lowercase pronoun<br>
-> `teh` → `the` typo
+> ✏️ The tests are failing after I updated the config. Can you explain why?<br>
+> `the tests is` → `the tests are` subject-verb agreement<br>
+> `i update` → `I updated` lowercase pronoun and tense<br>
+> `explane` → `explain` spelling
 
-Sure — what's failing? Paste the error output and I'll take a look.
+Which config did you change? If it touched the test environment, that's the usual suspect — paste the failure and I'll look.
 
-Clean prompt? Just the one line:
+Grammar and meaning come first, spelling after. The missing `?`, the lowercase start, and shortcuts like `dont` or `pls` are chat style — never flagged.
+
+Write it cleanly and you get one line instead:
 
 > 💪 Sharp grammar — you're leveling up.
 
-Chat style is never flagged — `dont`, `pls`, lowercase starts. Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
+Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
 
 ## Install
 
