@@ -6,19 +6,24 @@ Checks your English before every reply in [Claude Code](https://www.anthropic.co
 
 You type:
 
-> i need help with teh build
+> the tests is failing after i update the config, can you explane why
 
 Claude answers, with the fix on top:
 
-> ✏️ I need help with the build.<br>
-> `i` → `I` lowercase pronoun<br>
-> `teh` → `the` typo
+> ✏️ The tests are failing after I updated the config. Can you explain why?<br>
+> `the tests is` → `the tests are` subject-verb agreement<br>
+> `i update` → `I updated` lowercase pronoun and tense<br>
+> `explane` → `explain` spelling
 
-Sure — what's failing? Paste the error output and I'll take a look.
+Which config did you change? If it touched the test environment, that's the usual suspect — paste the failure and I'll look.
 
-Clean prompt? Just the one line:
+Grammar and meaning come first, spelling after. The missing `?`, the lowercase start, and shortcuts like `dont` or `pls` are chat style — never flagged.
+
+Write it cleanly and you get one line instead:
 
 > 💪 Sharp grammar — you're leveling up.
+
+Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
 
 ## Install
 
@@ -38,19 +43,17 @@ Restart your session so the hooks load.
 
 Or send `nativish off` / `on` as a plain message.
 
-Chat style is never flagged — `dont`, `pls`, lowercase starts. Slash commands, acks, bare paths and non-Latin text are skipped silently.
-
 ## Privacy
 
-Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/).
+Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — `cat` is the only external command either hook invokes, and the per-prompt one uses only builtins, so it runs with an empty `PATH`. Nothing to install means no supply chain to trust. Read all of it: [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/) — six files.
 
 ## Known limitations
 
-- **Short imperative prompts** — `dont forget to commit` should draw a compliment, but sometimes slips past unchecked. Model-dependent, not by design.
+- **A turn with real work in it** — `/tmp is full, please clean it` slips past unchecked on stronger models, because the reply goes straight to the task. Model-dependent, not by design.
 - **Windows needs Git Bash** — hooks run through it. With only PowerShell available, the `.sh` hooks never execute and you get no coaching at all, silently.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
-- **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.
+- **Long prompts** — the rewrite stops after a few sentences; fixes for the rest still appear.
 
 ---
 

@@ -50,6 +50,7 @@ Any change to `skills/english-coaching/SKILL.md` is gated by the adversarial fix
 - **Two states, on and off.** Strict mode forked every "what NOT to flag" rule into a second ruleset, and three of its four fixtures could never run single-shot. A third state means paying that again.
 - **No user-specific tuning of the rulebook.** It would bake one L1 into an L1-agnostic tool.
 - **Keep the rulebook lean.** Adding words to `SKILL.md` does not reliably change behaviour.
+- **Coaching drops when the turn has work in it — documented, not fixed.** On the CLI default model at 6 reps, an ordinary mistake-ridden prompt coaches 2/6 once there is code to act on, and `/tmp is full, please clean it` 0/6. It is not imperative form: `dont forget to commit` scores 5/6. Two prose fixes were measured and moved nothing, and a `UserPromptSubmit` hook can inject context but cannot reshape a reply, so there is no third lever.
 
 ## Traps
 
