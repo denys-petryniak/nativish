@@ -20,6 +20,8 @@ Clean prompt? Just the one line:
 
 > 💪 Sharp grammar — you're leveling up.
 
+Chat style is never flagged — `dont`, `pls`, lowercase starts. Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
+
 ## Install
 
 ```bash
@@ -38,8 +40,6 @@ Restart your session so the hooks load.
 
 Or send `nativish off` / `on` as a plain message.
 
-Chat style is never flagged — `dont`, `pls`, lowercase starts. Slash commands, acks, bare paths and non-Latin text are skipped silently.
-
 ## Privacy
 
 Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — bash and POSIX utilities only, so there's no supply chain to trust. Read the whole thing in [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/).
@@ -50,7 +50,7 @@ Everything runs locally in two shell scripts. No network calls, no telemetry, no
 - **Windows needs Git Bash** — hooks run through it. With only PowerShell available, the `.sh` hooks never execute and you get no coaching at all, silently.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
-- **Long prompts** echo only the first 2–4 corrected sentences; the rest of the fixes still appear.
+- **Long prompts** — the rewrite stops after a few sentences; fixes for the rest still appear.
 
 ---
 
