@@ -17,13 +17,13 @@ Claude answers, with the fix on top:
 
 Which config did you change? If it touched the test environment, that's the usual suspect — paste the failure and I'll look.
 
-Grammar and meaning come first, spelling after. The missing `?`, the lowercase start, and shortcuts like `dont` or `pls` are chat style — never flagged.
-
 Write it cleanly and you get one line instead:
 
 > 💪 Sharp grammar — you're leveling up.
 
-Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
+> [!NOTE]
+> Grammar and meaning come first, spelling after. The missing `?`, the lowercase start, and shortcuts like `dont` or `pls` are chat style — never flagged.<br>
+> Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
 
 ## Install
 
