@@ -45,7 +45,7 @@ Or send `nativish off` / `on` as a plain message.
 
 ## Privacy
 
-Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — `cat` is the only external command either hook invokes, and the per-prompt one uses only builtins, so it runs with an empty `PATH`. Nothing to install means no supply chain to trust. Read all of it: [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/) — six files.
+Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — `cat` is the only external command either hook invokes, and the per-prompt one uses only builtins, so it runs with an empty `PATH`. It pulls in nothing, so there is no supply chain to trust. Read all of it: [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/) — six files.
 
 ## Known limitations
 
