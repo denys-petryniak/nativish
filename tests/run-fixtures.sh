@@ -151,6 +151,10 @@ run_case "N2" \
   'i think this works' \
   'Mode 1 with i → I as a fix. Lowercase i is the one casing rule the skill always enforces.'
 
+run_case "F1" \
+  'i always confuses merge and rebase, what is the difference?' \
+  'Mode 1 with fixes for i → I and confuses → confuse. Every fix line has the shape ~~original~~ → **corrected** · issue: the original struck through with tildes, an arrow, the correction in bold, a middle dot, then the issue. A fix line written with backtick code spans is a FAIL.'
+
 run_case "H1" \
   'i need halp with teh tests' \
   'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in the corrected line and must not generate any fix of its own.'
