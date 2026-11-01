@@ -133,7 +133,7 @@ run_case "M3" \
 
 run_case "M4" \
   'i wnat to fix smth in auth' \
-  'Mode 1 with i → I and wnat → want each on its own fix line. smth raises NO fix line of its own. If the corrected line renders it as something, that is correct and NOT a flag - that line is a rewrite in correct English.'
+  'Mode 1 with i → I and wnat → want each on its own fix line. smth raises NO fix line of its own. If the corrected line renders it as something, that is correct and NOT a flag - that line is a rewrite in correct English. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line.'
 
 run_case "M5" \
   '/tmp is full, please clean it' \
@@ -152,16 +152,8 @@ run_case "N2" \
   'Mode 1 with i → I as a fix. Lowercase i is the one casing rule the skill always enforces.'
 
 run_case "F1" \
-  'i always confuses merge and rebase, what is the difference?' \
-  'Mode 1 with fixes for i → I and confuses → confuse. Every fix line has the shape ~~original~~ → **corrected** · issue: the original struck through with tildes, an arrow, the correction in bold, a middle dot, then the issue. A fix line written with backtick code spans is a FAIL.'
-
-run_case "F2" \
   'the *args parametr confuse me' \
-  'Mode 1 with fixes for parametr → parameter and confuse → confuses. Every asterisk, underscore or tilde from the user text that appears in the coaching block, the rewrite line included, is escaped with a backslash, as in \*args. A bare *args anywhere in the coaching block is a FAIL.'
-
-run_case "H1" \
-  'i need halp with teh tests' \
-  'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in the corrected line and must not generate any fix of its own.'
+  'Mode 1 with fixes for parametr → parameter and confuse → confuses. Every fix line has the shape ~~original~~ → **corrected** · issue: the original struck through with tildes, an arrow, the correction in bold, a middle dot, then the issue. Every asterisk, underscore or tilde from the user text that appears in the block, the rewrite line included, is escaped with a backslash, as in \*args. A backtick code span or a bare *args anywhere in the block is a FAIL.'
 
 echo "═══ Summary ═══"
 echo "Ran: $((pass + fail))  |  Pass: $pass  |  Fail: $fail  |  Model: ${NATIVISH_TEST_MODEL:-CLI default}"

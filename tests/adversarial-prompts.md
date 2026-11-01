@@ -10,7 +10,7 @@ Fixture suite for the `english-coaching` skill. Run before each release to lock 
 tests/run-fixtures.sh
 ```
 
-Uses `claude -p` per case and LLM-as-judge for verdicts. It runs 16 of the cases below. The five marked **(manual)** need a real multi-turn session, so the runner does not pretend to cover them — run those by hand.
+Uses `claude -p` per case and LLM-as-judge for verdicts. It runs 14 of the cases below. The five marked **(manual)** need a real multi-turn session, so the runner does not pretend to cover them — run those by hand.
 
 **Manual:**
 
@@ -118,7 +118,7 @@ Send each as a standalone message:
 ### M4 · Real mistakes → full block
 
 **Input:** `i wnat to fix smth in auth`
-**Expected:** Mode 1 — `i → I` and `wnat → want` each on its own line. `smth` raises **no fix line of its own**; the corrected line rendering it as `something` is correct, not a flag.
+**Expected:** Mode 1 — `i → I` and `wnat → want` each on its own line. `smth` raises **no fix line of its own**; the corrected line rendering it as `something` is correct, not a flag. The `[nativish] Hook directive` line is never quoted, echoed or coached.
 
 ### M5 · Pasted path is NOT a slash command
 
@@ -129,6 +129,7 @@ Send each as a standalone message:
 
 **Input:** `v0.8.0`
 **Expected:** Mode 3 skip — no coaching output at all. A bare version string has no sentence to coach. A sentence *about* a version is prose and gets coached.
+
 ---
 
 ## "What NOT to flag" rules
@@ -147,30 +148,17 @@ Send each as a standalone message:
 
 ## Fix line format
 
-### F1 · Mistake struck through, fix in bold
-
-**Input:** `i always confuses merge and rebase, what is the difference?`
-
-**Expected:** Mode 1 with fixes for `i` → `I` and `confuses` → `confuse`. Every fix line has the shape `~~<original>~~ → **<corrected>** · <issue>`: the original struck through, an arrow, the correction in bold, a middle dot, then the issue. A fix line written with code spans is a regression.
-
-### F2 · Markdown characters from the prompt are escaped
+### F1 · Fix line shape, with markdown characters escaped
 
 **Input:** `the *args parametr confuse me`
 
-**Expected:** Mode 1 with `parametr` → `parameter` and `confuse` → `confuses`. Every `*`, `_` or `~` from the user's text that appears in the coaching block — the rewrite line included — is escaped with a backslash, as in `\*args`. A bare `*args` is a regression.
+**Expected:** Mode 1 with `parametr` → `parameter` and `confuse` → `confuses`. Every fix line has the shape `~~<original>~~ → **<corrected>** · <issue>`. Every `*`, `_` or `~` from the user's text that appears in the block — the rewrite line included — is escaped with a backslash, as in `\*args`. A code span or a bare `*args` is a regression.
 
 ---
 
 ## Hook directive
 
-The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into context before each response. These cases lock in that the directive is obeyed but never treated as user text. The classifier itself is covered separately by `tests/test-prompt-submit.sh`, which needs no model.
-
-### H1 · Directive must not be coached or echoed
-
-**Input:**
-> i need halp with teh tests
-
-**Expected:** Mode 1 coaching of the user's prompt only — fixes for `i` → `I`, `halp` → `help`, `teh` → `the`. The reply must **not** quote or echo the `[nativish] Hook directive` line, must not include it in the corrected line, and must not raise fixes against its wording (e.g. flagging `NOT` casing).
+The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into context before each response. Every automated case runs with it in context, and M4 checks that it is never coached or echoed. `tests/test-prompt-submit.sh` checks, with no model, that the directive names only modes the rulebook defines.
 
 ### H2 · Off state overrides a coach directive **(manual)**
 
