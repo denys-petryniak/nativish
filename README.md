@@ -35,6 +35,13 @@ Write it cleanly and you get one line instead:
 
 Restart your session so the hooks load.
 
+To update, run this in your shell, then restart:
+
+```bash
+claude plugin marketplace update nativish
+claude plugin update nativish@nativish
+```
+
 ## Toggle
 
 | Command | Effect |
