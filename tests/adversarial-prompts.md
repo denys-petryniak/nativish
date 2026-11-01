@@ -150,9 +150,9 @@ Send each as a standalone message:
 
 ### F1 · Fix line shape, with markdown characters escaped
 
-**Input:** `the *args parametr confuse me`
+**Input:** ``the *args and `**kwargs` is confusing for me``
 
-**Expected:** Mode 1 with `parametr` → `parameter` and `confuse` → `confuses`. Every fix line has the shape `~~<original>~~ → **<corrected>** · <issue>`. Every `*`, `_` or `~` from the user's text that appears in the block — the rewrite line included — is escaped with a backslash, as in `\*args`. A code span or a bare `*args` is a regression.
+**Expected:** Mode 1 with `is` → `are`. Every fix line has the shape `~~<original>~~ → **<corrected>** · <issue>`. Every `*`, `_` or `~` from the user's text that appears in the block, the rewrite line included, is escaped with a backslash, as in `\*args`, except inside the user's own backticks: `` `**kwargs` `` stays exactly as typed. A code-span fix line, a bare `*args`, or a backslash inside the backticks is a regression.
 
 ---
 

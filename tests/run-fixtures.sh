@@ -156,9 +156,10 @@ run_case "N2" \
   'i think this works' \
   'Mode 1 with i → I as a fix. Lowercase i is the one casing rule the skill always enforces.'
 
+# shellcheck disable=SC2016  # the backticks are literal fixture input, not a command
 run_case "F1" \
-  'the *args parametr confuse me' \
-  'Mode 1 with fixes for parametr → parameter and confuse → confuses. Every fix line has the shape ~~original~~ → **corrected** · issue: the original struck through with tildes, an arrow, the correction in bold, a middle dot, then the issue. Every asterisk, underscore or tilde from the user text that appears in the block, the rewrite line included, is escaped with a backslash, as in \*args. A backtick code span or a bare *args anywhere in the block is a FAIL.'
+  'the *args and `**kwargs` is confusing for me' \
+  'Mode 1 with a fix for is → are. Every fix line has the shape ~~original~~ → **corrected** · issue: the original struck through with tildes, an arrow, the correction in bold, a middle dot, then the issue. Every asterisk, underscore or tilde from the user text that appears in the block, the rewrite line included, is escaped with a backslash, as in \*args, EXCEPT inside the backticks the user typed: `**kwargs` must appear exactly as typed, with no backslash. A backtick code-span fix line, a bare *args outside backticks, or a backslash inside the backticks is a FAIL.'
 
 echo "═══ Summary ═══"
 echo "Ran: $((pass + fail))  |  Pass: $pass  |  Fail: $fail  |  Model: ${NATIVISH_TEST_MODEL:-CLI default}"
