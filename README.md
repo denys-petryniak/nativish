@@ -45,12 +45,12 @@ Or send `nativish off` / `on` as a plain message.
 
 ## Privacy
 
-Everything runs locally in two shell scripts. No network calls, no telemetry, nothing written to disk, and **no dependencies** — `cat` is the only external command either hook invokes, and the per-prompt one uses only builtins, so it runs with an empty `PATH`. Nothing to install means no supply chain to trust. Read all of it: [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/) — six files.
+The plugin is two shell scripts and a rulebook. No network calls, no telemetry, nothing written to disk, and **no dependencies** — `cat` is the only external command either hook runs. Read all of it: [`hooks/`](hooks/), [`commands/`](commands/) and [`skills/english-coaching/`](skills/english-coaching/) — six files.
 
 ## Known limitations
 
-- **A turn with real work in it** — `/tmp is full, please clean it` slips past unchecked on stronger models, because the reply goes straight to the task. Model-dependent, not by design.
-- **Windows needs Git Bash** — hooks run through it. With only PowerShell available, the `.sh` hooks never execute and you get no coaching at all, silently.
+- **A turn with real work in it** — `/tmp is full, please clean it` often goes uncoached on stronger models, because the reply goes straight to the task.
+- **Windows needs Git Bash** — with only PowerShell, the hooks never run and coaching silently does nothing.
 - **Pasted code and logs** get coached too, so expect the odd false flag.
 - **Toggles reset on `/clear`** — say `/nativish:off` again.
 - **Long prompts** — the rewrite stops after a few sentences; fixes for the rest still appear.
