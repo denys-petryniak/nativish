@@ -146,8 +146,8 @@ run_case "M6" \
   'Mode 3 skip: NO coaching output whatsoever, not even a status marker. A bare version string has no sentence to coach.'
 
 run_case "N1" \
-  'dont forget to commit' \
-  'Mode 2 compliment. Flagging dont or the lowercase d is a regression — both are chat style, not mistakes.'
+  'dont forget to commit, lets ship it' \
+  'Mode 2 compliment. Flagging dont, lets or the lowercase d is a regression — all are chat style, not mistakes.'
 
 run_case "N2" \
   'i think this works' \

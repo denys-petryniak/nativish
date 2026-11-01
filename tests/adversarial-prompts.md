@@ -136,8 +136,8 @@ Send each as a standalone message:
 
 ### N1 · Missing apostrophe + lowercase first letter → not flagged
 
-**Input:** `dont forget to commit`
-**Expected:** Mode 2 compliment. Flagging `dont` or the lowercase `d` is a regression — both are chat style, not mistakes. This is the case that guards the strict-mode removal: flagging these *was* strict mode.
+**Input:** `dont forget to commit, lets ship it`
+**Expected:** Mode 2 compliment. Flagging `dont`, `lets` or the lowercase `d` is a regression — all are chat style, not mistakes. This is the case that guards the strict-mode removal: flagging these *was* strict mode.
 
 ### N2 · Lowercase pronoun `i` → MUST be flagged
 
