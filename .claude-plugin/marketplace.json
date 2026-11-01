@@ -7,7 +7,10 @@
   "plugins": [
     {
       "name": "nativish",
-      "source": "./"
+      "source": "./",
+      "description": "Writing coach for non-native speakers — checks the user's English before each response",
+      "category": "learning",
+      "tags": ["english", "grammar", "writing", "non-native"]
     }
   ]
 }
