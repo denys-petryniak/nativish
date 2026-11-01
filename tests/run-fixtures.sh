@@ -38,13 +38,15 @@ cd "$SANDBOX" || exit 2
 MODEL_ARGS=()
 [[ -n ${NATIVISH_TEST_MODEL:-} ]] && MODEL_ARGS=(--model "$NATIVISH_TEST_MODEL")
 
-# Read-only tools: cases like M5 ask Claude to clean /tmp, and a permissive
-# user config would let it. No tools at all would hide the real failure, a
-# reply that goes straight to work and skips the coaching.
-coached() { claude --tools 'Read,Grep,Glob' --plugin-dir "$REPO" "${MODEL_ARGS[@]+"${MODEL_ARGS[@]}"}" -p "$1" </dev/null 2>&1; }
+# Read-only tools and no MCP servers: cases like M5 ask Claude to clean /tmp,
+# and a permissive user config or a connected account would let it. No tools
+# at all would hide the real failure, a reply that goes straight to work and
+# skips the coaching.
+coached() { claude --tools 'Read,Grep,Glob' --strict-mcp-config --plugin-dir "$REPO" "${MODEL_ARGS[@]+"${MODEL_ARGS[@]}"}" -p "$1" </dev/null 2>&1; }
 
 # No plugins, so the verdict carries no coaching block to filter around.
-judged() { claude -p "$1" </dev/null 2>&1; }
+# It reads replies to the injection cases, so it gets no tools at all.
+judged() { claude --tools '' --strict-mcp-config -p "$1" </dev/null 2>&1; }
 
 pass=0
 fail=0
