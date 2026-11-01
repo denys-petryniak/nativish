@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       # shellcheck lints, it does not parse: run both. bash -n parses only its
-      # first file and takes the rest as arguments, so loop.
-      - run: for f in hooks/*.sh tests/*.sh; do bash -n "$f" || exit 1; done
+      # first file and takes the rest as arguments, so loop, reporting every file.
+      - run: rc=0; for f in hooks/*.sh tests/*.sh; do bash -n "$f" || rc=1; done; exit $rc
       - run: shellcheck hooks/*.sh tests/*.sh
       - run: tests/test-prompt-submit.sh
