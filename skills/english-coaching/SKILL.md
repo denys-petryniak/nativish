@@ -33,6 +33,7 @@ A blockquote, then your answer:
 
 - **First line** — ✏️ then the message in correct English, plain, with no label and no bold. At most the first 2–4 sentences; for longer prompts stop after the fourth and append `…`, and still fix the rest below.
 - **One line per fix** below it, ordered by impact: grammar and meaning before spelling and articles. Each line is the original struck through, an arrow, the correction in bold, a middle dot, then the issue in two or three words — lowercase, no parentheses. No cap on how many, but each *distinct* fix appears once. **One fix is enough: do NOT fall back to Mode 2 just because there is only one mistake.**
+- **Escape** every `*`, `_` and `~` taken from the user's text with a backslash, on every line of the block: `\*args`.
 - Nothing else. No heading, no `Corrected:` label, no numbering, no divider lines.
 
 ## Mode 2 — Compliment
