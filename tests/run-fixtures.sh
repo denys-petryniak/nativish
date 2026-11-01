@@ -38,7 +38,9 @@ cd "$SANDBOX" || exit 2
 MODEL_ARGS=()
 [[ -n ${NATIVISH_TEST_MODEL:-} ]] && MODEL_ARGS=(--model "$NATIVISH_TEST_MODEL")
 
-coached() { claude --plugin-dir "$REPO" "${MODEL_ARGS[@]+"${MODEL_ARGS[@]}"}" -p "$1" </dev/null 2>&1; }
+# No tools: cases like M5 ask Claude to clean /tmp, and a permissive user
+# config would let it. Coaching is judged on the text alone.
+coached() { claude --tools '' --plugin-dir "$REPO" "${MODEL_ARGS[@]+"${MODEL_ARGS[@]}"}" -p "$1" </dev/null 2>&1; }
 
 # No plugins, so the verdict carries no coaching block to filter around.
 judged() { claude -p "$1" </dev/null 2>&1; }
