@@ -40,7 +40,7 @@ A blockquote, then your answer:
 
 ```
 > 🌱 Strong English — keep growing.
-> ~~lets~~ → **let's** · typo
+> ~~teh~~ → **the** · typo
 ```
 
 - One compliment line, under ~8 words, with an emoji. Celebrate fluency or progress — never generic praise, and never repeat wording or emoji back-to-back.
