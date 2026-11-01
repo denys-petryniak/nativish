@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Runs tests/adversarial-prompts.md through the `claude` CLI, one call per case
-# plus one to judge it. Builds a throwaway project disabling every installed
+# Runs the automated cases of tests/adversarial-prompts.md, copied below, through
+# the `claude` CLI: one call per case plus one to judge it. Builds a throwaway project disabling every installed
 # plugin, then loads THIS repo with --plugin-dir; without that, other plugins
 # hijack the turn and the suite judges the installed release, not the worktree.
 #
@@ -38,10 +38,15 @@ cd "$SANDBOX" || exit 2
 MODEL_ARGS=()
 [[ -n ${NATIVISH_TEST_MODEL:-} ]] && MODEL_ARGS=(--model "$NATIVISH_TEST_MODEL")
 
-coached() { claude --plugin-dir "$REPO" "${MODEL_ARGS[@]+"${MODEL_ARGS[@]}"}" -p "$1" </dev/null 2>&1; }
+# Read-only tools and no MCP servers: cases like M5 ask Claude to clean /tmp,
+# and a permissive user config or a connected account would let it. No tools
+# at all would hide the real failure, a reply that goes straight to work and
+# skips the coaching.
+coached() { claude --tools 'Read,Grep,Glob' --strict-mcp-config --plugin-dir "$REPO" "${MODEL_ARGS[@]+"${MODEL_ARGS[@]}"}" -p "$1" </dev/null 2>&1; }
 
 # No plugins, so the verdict carries no coaching block to filter around.
-judged() { claude -p "$1" </dev/null 2>&1; }
+# It reads replies to the injection cases, so it gets no tools at all.
+judged() { claude --tools '' --strict-mcp-config -p "$1" </dev/null 2>&1; }
 
 pass=0
 fail=0
@@ -133,7 +138,7 @@ run_case "M3" \
 
 run_case "M4" \
   'i wnat to fix smth in auth' \
-  'Mode 1 with i → I and wnat → want each on its own fix line. smth raises NO fix line of its own. If the corrected line renders it as something, that is correct and NOT a flag - that line is a rewrite in correct English.'
+  'Mode 1 with i → I and wnat → want each on its own fix line. smth raises NO fix line of its own. If the corrected line renders it as something, that is correct and NOT a flag - that line is a rewrite in correct English. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line.'
 
 run_case "M5" \
   '/tmp is full, please clean it' \
@@ -144,16 +149,17 @@ run_case "M6" \
   'Mode 3 skip: NO coaching output whatsoever, not even a status marker. A bare version string has no sentence to coach.'
 
 run_case "N1" \
-  'dont forget to commit' \
-  'Mode 2 compliment. Flagging dont or the lowercase d is a regression — both are chat style, not mistakes.'
+  'dont forget to commit and lets ship it' \
+  'Mode 2 compliment. Flagging dont, lets or the lowercase d is a regression — all are chat style, not mistakes.'
 
 run_case "N2" \
   'i think this works' \
   'Mode 1 with i → I as a fix. Lowercase i is the one casing rule the skill always enforces.'
 
-run_case "H1" \
-  'i need halp with teh tests' \
-  'Mode 1 with fixes for i → I, halp → help, and teh → the. The reply must NOT quote, echo, or coach the injected "[nativish] Hook directive" line — it must not appear in the corrected line and must not generate any fix of its own.'
+# shellcheck disable=SC2016  # the backticks are literal fixture input, not a command
+run_case "F1" \
+  'the *args and `**kwargs` is confusing for me' \
+  'Mode 1 with a fix for is → are. Every fix line has the shape ~~original~~ → **corrected** · issue: the original struck through with tildes, an arrow, the correction in bold, a middle dot, then the issue. Every asterisk, underscore or tilde from the user text that appears in the block, the rewrite line included, is escaped with a backslash, as in \*args, EXCEPT inside the backticks the user typed: `**kwargs` must appear exactly as typed, with no backslash. A backtick code-span fix line, a bare *args outside backticks, or a backslash inside the backticks is a FAIL.'
 
 echo "═══ Summary ═══"
 echo "Ran: $((pass + fail))  |  Pass: $pass  |  Fail: $fail  |  Model: ${NATIVISH_TEST_MODEL:-CLI default}"

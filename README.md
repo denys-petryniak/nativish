@@ -11,9 +11,10 @@ You type:
 Claude answers, with the fix on top:
 
 > ✏️ The tests are failing after I updated the config. Can you explain why?<br>
-> `the tests is` → `the tests are` subject-verb agreement<br>
-> `i update` → `I updated` lowercase pronoun and tense<br>
-> `explane` → `explain` spelling
+> ~~the tests is~~ → **the tests are** · subject-verb agreement<br>
+> ~~update~~ → **updated** · verb tense<br>
+> ~~i~~ → **I** · lowercase pronoun<br>
+> ~~explane~~ → **explain** · spelling
 
 Which config did you change? If it touched the test environment, that's the usual suspect — paste the failure and I'll look.
 
@@ -23,7 +24,7 @@ Write it cleanly and you get one line instead:
 
 > [!NOTE]
 > Grammar and meaning come first, spelling after. The missing `?`, the lowercase start, and shortcuts like `dont` or `pls` are chat style — never flagged.<br>
-> Slash commands, acks, version strings, bare paths and non-Latin text produce no output at all.
+> Slash commands, acks, version strings, bare paths and non-Latin text get no coaching at all.
 
 ## Install
 
@@ -41,7 +42,7 @@ Restart your session so the hooks load.
 | `/nativish:off` | stop coaching for this conversation |
 | `/nativish:on` | turn it back on |
 
-Or send `nativish off` / `on` as a plain message.
+Or send `nativish off` / `nativish on` as a plain message.
 
 ## Privacy
 

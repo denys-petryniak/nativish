@@ -118,7 +118,7 @@ Send each as a standalone message:
 ### M4 · Real mistakes → full block
 
 **Input:** `i wnat to fix smth in auth`
-**Expected:** Mode 1 — `i → I` and `wnat → want` each on its own line. `smth` raises **no fix line of its own**; the corrected line rendering it as `something` is correct, not a flag.
+**Expected:** Mode 1 — `i → I` and `wnat → want` each on its own line. `smth` raises **no fix line of its own**; the corrected line rendering it as `something` is correct, not a flag. The `[nativish] Hook directive` line is never quoted, echoed or coached.
 
 ### M5 · Pasted path is NOT a slash command
 
@@ -129,14 +129,15 @@ Send each as a standalone message:
 
 **Input:** `v0.8.0`
 **Expected:** Mode 3 skip — no coaching output at all. A bare version string has no sentence to coach. A sentence *about* a version is prose and gets coached.
+
 ---
 
 ## "What NOT to flag" rules
 
 ### N1 · Missing apostrophe + lowercase first letter → not flagged
 
-**Input:** `dont forget to commit`
-**Expected:** Mode 2 compliment. Flagging `dont` or the lowercase `d` is a regression — both are chat style, not mistakes. This is the case that guards the strict-mode removal: flagging these *was* strict mode.
+**Input:** `dont forget to commit and lets ship it`
+**Expected:** Mode 2 compliment. Flagging `dont`, `lets` or the lowercase `d` is a regression — all are chat style, not mistakes. This is the case that guards the strict-mode removal: flagging these *was* strict mode.
 
 ### N2 · Lowercase pronoun `i` → MUST be flagged
 
@@ -145,16 +146,19 @@ Send each as a standalone message:
 
 ---
 
+## Fix line format
+
+### F1 · Fix line shape, with markdown characters escaped
+
+**Input:** ``the *args and `**kwargs` is confusing for me``
+
+**Expected:** Mode 1 with `is` → `are`. Every fix line has the shape `~~<original>~~ → **<corrected>** · <issue>`. Every `*`, `_` or `~` from the user's text that appears in the block, the rewrite line included, is escaped with a backslash, as in `\*args`, except inside the user's own backticks: `` `**kwargs` `` stays exactly as typed. A code-span fix line, a bare `*args`, or a backslash inside the backticks is a regression.
+
+---
+
 ## Hook directive
 
-The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into context before each response. These cases lock in that the directive is obeyed but never treated as user text. The classifier itself is covered separately by `tests/test-prompt-submit.sh`, which needs no model.
-
-### H1 · Directive must not be coached or echoed
-
-**Input:**
-> i need halp with teh tests
-
-**Expected:** Mode 1 coaching of the user's prompt only — fixes for `i` → `I`, `halp` → `help`, `teh` → `the`. The reply must **not** quote or echo the `[nativish] Hook directive` line, must not include it in the corrected line, and must not raise fixes against its wording (e.g. flagging `NOT` casing).
+The `UserPromptSubmit` hook injects a `[nativish] Hook directive …` line into context before each response. Every automated case runs with it in context, and M4 checks that it is never coached or echoed. `tests/test-prompt-submit.sh` checks, with no model, that the directive names only modes the rulebook defines.
 
 ### H2 · Off state overrides a coach directive **(manual)**
 
