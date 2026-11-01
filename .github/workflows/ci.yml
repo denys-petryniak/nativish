@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      # shellcheck lints, it does not parse: run both.
-      - run: bash -n hooks/*.sh tests/*.sh
+      # shellcheck lints, it does not parse: run both. bash -n parses only its
+      # first file and takes the rest as arguments, so loop.
+      - run: for f in hooks/*.sh tests/*.sh; do bash -n "$f" || exit 1; done
       - run: shellcheck hooks/*.sh tests/*.sh
       - run: tests/test-prompt-submit.sh
