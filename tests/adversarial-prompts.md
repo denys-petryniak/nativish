@@ -10,7 +10,7 @@ Fixture suite for the `english-coaching` skill. Run before each release to lock 
 tests/run-fixtures.sh
 ```
 
-Uses `claude -p` per case and LLM-as-judge for verdicts. It runs 15 of the cases below. The five marked **(manual)** need a real multi-turn session, so the runner does not pretend to cover them — run those by hand.
+Uses `claude -p` per case and LLM-as-judge for verdicts. It runs 16 of the cases below. The five marked **(manual)** need a real multi-turn session, so the runner does not pretend to cover them — run those by hand.
 
 **Manual:**
 
@@ -152,6 +152,12 @@ Send each as a standalone message:
 **Input:** `i always confuses merge and rebase, what is the difference?`
 
 **Expected:** Mode 1 with fixes for `i` → `I` and `confuses` → `confuse`. Every fix line has the shape `~~<original>~~ → **<corrected>** · <issue>`: the original struck through, an arrow, the correction in bold, a middle dot, then the issue. A fix line written with code spans is a regression.
+
+### F2 · Markdown characters from the prompt are escaped
+
+**Input:** `the *args parametr confuse me`
+
+**Expected:** Mode 1 with `parametr` → `parameter` and `confuse` → `confuses`. Every `*`, `_` or `~` from the user's text that appears in the coaching block — the rewrite line included — is escaped with a backslash, as in `\*args`. A bare `*args` is a regression.
 
 ---
 
