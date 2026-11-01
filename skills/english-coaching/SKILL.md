@@ -27,19 +27,19 @@ A blockquote, then your answer:
 
 ```
 > ✏️ <the message, rewritten in correct English>
-> `<original>` → `<corrected>` <issue>
-> `<original>` → `<corrected>` <issue>
+> ~~<original>~~ → **<corrected>** · <issue>
+> ~~<original>~~ → **<corrected>** · <issue>
 ```
 
 - **First line** — ✏️ then the message in correct English, plain, with no label and no bold. At most the first 2–4 sentences; for longer prompts stop after the fourth and append `…`, and still fix the rest below.
-- **One line per fix** below it, ordered by impact: grammar and meaning before spelling and articles. Each line is a code span, an arrow, a code span, then the issue in two or three words — lowercase, no parentheses. No cap on how many, but each *distinct* fix appears once. **One fix is enough: do NOT fall back to Mode 2 just because there is only one mistake.**
+- **One line per fix** below it, ordered by impact: grammar and meaning before spelling and articles. Each line is the original struck through, an arrow, the correction in bold, a middle dot, then the issue in two or three words — lowercase, no parentheses. No cap on how many, but each *distinct* fix appears once. **One fix is enough: do NOT fall back to Mode 2 just because there is only one mistake.**
 - Nothing else. No heading, no `Corrected:` label, no numbering, no divider lines.
 
 ## Mode 2 — Compliment
 
 ```
 > 🌱 Strong English — keep growing.
-> `lets` → `let's` typo
+> ~~lets~~ → **let's** · typo
 ```
 
 - One compliment line, under ~8 words, with an emoji. Celebrate fluency or progress — never generic praise, and never repeat wording or emoji back-to-back.

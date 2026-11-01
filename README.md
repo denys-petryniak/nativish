@@ -11,9 +11,9 @@ You type:
 Claude answers, with the fix on top:
 
 > ✏️ The tests are failing after I updated the config. Can you explain why?<br>
-> `the tests is` → `the tests are` subject-verb agreement<br>
-> `i update` → `I updated` lowercase pronoun and tense<br>
-> `explane` → `explain` spelling
+> ~~the tests is~~ → **the tests are** · subject-verb agreement<br>
+> ~~i update~~ → **I updated** · lowercase pronoun and tense<br>
+> ~~explane~~ → **explain** · spelling
 
 Which config did you change? If it touched the test environment, that's the usual suspect — paste the failure and I'll look.
 
