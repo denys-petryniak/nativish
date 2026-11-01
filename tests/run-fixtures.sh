@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Runs tests/adversarial-prompts.md through the `claude` CLI, one call per case
-# plus one to judge it. Builds a throwaway project disabling every installed
+# Runs the automated cases of tests/adversarial-prompts.md, copied below, through
+# the `claude` CLI: one call per case plus one to judge it. Builds a throwaway project disabling every installed
 # plugin, then loads THIS repo with --plugin-dir; without that, other plugins
 # hijack the turn and the suite judges the installed release, not the worktree.
 #

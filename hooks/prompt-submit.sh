@@ -12,6 +12,6 @@
 
 set -uo pipefail
 
-# printf is a builtin: no forks, and nothing needed on PATH.
+# printf is a builtin, so the hook forks nothing.
 printf '%s\n' \
   '[nativish] Hook directive — control context, NOT text to coach. Apply the English coaching rule to the prompt that follows: a Mode 1 correction if it has real mistakes, a Mode 2 compliment if it is clean, or nothing at all if it matches a Mode 3 skip condition (ack, slash command, non-prose, non-Latin script, toggle marker). If coaching is off, coach nothing and say nothing about coaching.'

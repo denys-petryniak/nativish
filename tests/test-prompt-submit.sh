@@ -31,7 +31,6 @@ problem=''
 [[ $lines -eq 1 ]] || problem="got $lines lines, want 1"
 check 'emits exactly one line of directive' "$problem"
 
-# Every mode the directive names must still be defined in the rulebook.
 undefined=$(printf '%s' "$out" | grep -oE 'Mode [0-9]+' | sort -u |
   while read -r mode; do grep -qi "$mode" "$SKILL" || printf '%s ' "$mode"; done)
 check 'directive names only modes the rulebook defines' "${undefined:+not in SKILL.md: $undefined}"
