@@ -2,6 +2,7 @@
   "name": "nativish",
   "description": "Writing coach for non-native speakers — checks the user's English before each response",
   "version": "0.10.0",
+  "license": "MIT",
   "author": {
     "name": "Denys Petryniak"
   },
